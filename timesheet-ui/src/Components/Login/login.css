@@ -1,0 +1,91 @@
+.login {
+    display: flex;
+    justify-content: flex-end; /* Moves the form to the right */
+    align-items: center;
+    min-height: 100vh;
+    background: url('../Images/bglogin.jpg') no-repeat center center;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .loginform {
+    width: 400px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    border-radius: 10px;
+    padding: 30px 40px;
+    margin-right: 50px; /* Adds space between the form and the right edge of the screen */
+  }
+  
+  .loginform h1 {
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  .loginform .input-box {
+    position: relative;
+    width: 100%;
+    height: 55px; /* Increased height for better input field visibility */
+    margin: 20px 0;
+  }
+  
+  .input-box input {
+    width: 80%;
+    height: 100%;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 0 20px 0 50px; /* Adjust padding for better alignment */
+  }
+  
+  .input-box input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Slightly dimmed placeholder text */
+  }
+  
+  .input-box .icon {
+    position: absolute;
+    left: 15px; /* Positioned icon correctly to avoid overlapping */
+    top: 50%;
+    font-size: 20px; /* Slightly larger icon size for better visibility */
+    transform: translateY(-50%);
+  }
+
+  .forgot {
+    text-align: right;
+    margin: 10px 0;
+  }
+  
+  .forgot a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .forgot a:hover {
+    text-decoration: underline;
+  }
+  
+  .loginform button {
+    width: 80%;
+    height: 45px;
+    background-color: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 700;
+  }
+  .loginform button:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    /* background-color: #979898;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); */
+  }
