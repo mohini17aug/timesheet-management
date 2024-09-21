@@ -7,12 +7,22 @@ class TimesheetConfig(AppConfig):
     name = 'timesheet'
 
     def ready(self):
+        # Ensure the User model is ready
         User = get_user_model()
-        if os.environ.get('SUPERUSER_NAME') and os.environ.get('SUPERUSER_EMAIL') and os.environ.get('SUPERUSER_PASSWORD'):
-            if not User.objects.filter(username=os.environ['SUPERUSER_NAME']).exists():
+
+        # Only run this logic if the environment variables are set
+        superuser_name = os.environ.get('SUPERUSER_NAME')
+        superuser_email = os.environ.get('SUPERUSER_EMAIL')
+        superuser_password = os.environ.get('SUPERUSER_PASSWORD')
+
+        if superuser_name and superuser_email and superuser_password:
+            # Check if the superuser already exists
+            if not User.objects.filter(username=superuser_name).exists():
                 User.objects.create_superuser(
-                    username=os.environ['SUPERUSER_NAME'],
-                    email=os.environ['SUPERUSER_EMAIL'],
-                    password=os.environ['SUPERUSER_PASSWORD']
+                    username=superuser_name,
+                    email=superuser_email,
+                    password=superuser_password
                 )
-        
+                print(f"Superuser {superuser_name} created successfully.")
+            else:
+                print(f"Superuser {superuser_name} already exists.")
