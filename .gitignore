@@ -1,0 +1,76 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyo
+*.pyd
+
+# SQLite database
+db.sqlite3
+*.sqlite3
+
+# Django static files
+/static/
+/media/
+
+# Local environment settings
+.env
+.env.*
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Migrations
+**/migrations/*
+!**/migrations/__init__.py
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.swp
+*.swo
+*.swn
+*~
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+pytest_cache/
+
+# Unit test / coverage reports
+*.cover
+.cache
+.noseids
+*.coverage
+*.cover
+*.py,cover
+
+# MyPy
+.mypy_cache/
+
+# pipenv
+Pipfile.lock
