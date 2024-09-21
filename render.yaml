@@ -4,11 +4,14 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn myapp.wsgi:application
+    startCommand: 
+      - python manage.py makemigrations
+      - python manage.py migrate
+      - gunicorn timesheet_management_system.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: DEBUG
         value: 'False'
       - key: ALLOWED_HOSTS
-        value: 'timesheet.onrender.com'
+        value: 'timesheet-management-dqe8.onrender.com'
