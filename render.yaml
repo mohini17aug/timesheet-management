@@ -4,8 +4,10 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: |
-      python manage.py migrate && gunicorn timesheet_management_system.wsgi:application
+    startCommand: gunicorn timesheet_management_system.wsgi:application
+    postDeployCommand: |
+      python manage.py migrate && \
+      python manage.py create_superuser_if_not_exists
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
