@@ -4,9 +4,8 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: 
-      - python manage.py migrate
-      - gunicorn timesheet_management_system.wsgi:application
+    startCommand: |
+      python manage.py migrate && gunicorn timesheet_management_system.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
