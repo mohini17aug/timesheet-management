@@ -5,7 +5,6 @@ services:
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: 
-      - python manage.py makemigrations
       - python manage.py migrate
       - gunicorn timesheet_management_system.wsgi:application
     envVars:
