@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p3oy$&q$v)-(9efm631jjqlso=)_+j4l$22cwz@%59vrcv0=c9'
+#SECRET_KEY = 'django-insecure-p3oy$&q$v)-(9efm631jjqlso=)_+j4l$22cwz@%59vrcv0=c9'
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-p3oy$&q$v)-(9efm631jjqlso=)_+j4l$22cwz@%59vrcv0=c9')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -49,7 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'timesheet_management_system.urls'
 
@@ -81,6 +88,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+#DATABASES["default"] = dj_database_url.parse("postgresql://timesheet_django_render_user:0Hz6TxQiyP10FIH5h2yfz7qlFNXr7uhx@dpg-crnd3ju8ii6s73ep1dh0-a.oregon-postgres.render.com/timesheet_django_render")
+#postgresql://timesheet_django_render_user:0Hz6TxQiyP10FIH5h2yfz7qlFNXr7uhx@dpg-crnd3ju8ii6s73ep1dh0-a.oregon-postgres.render.com/timesheet_django_render
 
 
 # Password validation
@@ -120,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -130,4 +141,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or another email service provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'timesheetbits@gmail.com'
+EMAIL_HOST_PASSWORD = 'ocrcomproneadmwq'
+
+AUTH_USER_MODEL="timesheet.CustomUser"
+
 

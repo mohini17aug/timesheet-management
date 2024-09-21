@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User, AbstractUser
+from django.conf import settings
 
 class Admin(models.Model):
     name = models.CharField(max_length=100)
@@ -14,6 +16,7 @@ class Project(models.Model):
         return self.name
 
 class Employee(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -33,3 +36,10 @@ class TimesheetEntry(models.Model):
 
     class Meta:
         unique_together = ['employee', 'date', 'project']  # Ensures one entry per date
+
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']  # This ensures username is still required, but login will be with email.
