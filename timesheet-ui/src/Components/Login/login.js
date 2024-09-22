@@ -31,7 +31,7 @@ const Login = () =>{
           console.log('Success:', response.data["access"]);
           localStorage.setItem("accesstoken",response.data["access"]);
           localStorage.setItem("refreshtoken",response.data["refresh"]);
-          navigate("/employee");
+          navigate("/dashboard");
         } else if (response.status === 201) {
           console.log('Resource created:', response.data);
         }
