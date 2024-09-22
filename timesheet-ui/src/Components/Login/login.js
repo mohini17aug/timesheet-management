@@ -2,36 +2,54 @@ import {React,useState} from "react";
 import './login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { Link ,useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const Login = () =>{
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [error, setError] = useState('');
+  const navigate=useNavigate();
 
   const handleSubmit = (e) =>{
     e.preventDefault();
     console.log("user login");
-    
-    // if(!email || !password ) {
-    //     setError('Please fill in all fields');
-    //     return;
-    // }
-    // axios.post('http://127.0.0.1:8000/login/', {
-    //         username: email,
-    //         password: password,
-    //     })
-    //     .then(response => {
-    //         console.log(response.data);
-    //         alert("Login Successfull !!");
-    //             localStorage.setItem("Name",email)
-    //             navigate("/booking");)
-    //     .catch(error => {
-    //         console.error('Error:', error.response.status);
-    //         // Handle errors here
-    //         if(error.response.status=== 400)
-    //         {setError("Invalid user name or password")}
-    //     });
+    console.log(email+"---"+password+"---");
+    axios.post('http://localhost:8000/timesheet/token/', {
+        username: email,
+        password: password,
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        console.log(response);
+        alert("login Successfull !!");
+        navigate("/");
+    })
+    .catch(error => {
+        console.error('Error:', error.response.data);
+        // // // Handle errors here
+        // if (error.response) {
+        //     // Server responded with a status other than 2xx
+        //     console.error('Response Error:', error.response);
+        //     console.log('Status:', error.response.status);
+        //     console.log('Data:', error.response.data);
+        //     console.log('Headers:', error.response.headers);
+        //     setError(error.response.data.detail || 'Login failed, please try again.');
+        // } else if (error.request) {
+        //     // Request was made but no response was received
+        //     console.error('No Response Error:', error.request);
+        //     setError('No response from server. Please check your network.');
+        // } else {
+        //     // Something happened in setting up the request
+        //     console.error('Axios Error:', error.message);
+        //     setError('Error setting up request. Please try again.');
+        // }
+        // console.log('Config:', error.config);
+    });
     };
 
     return(
@@ -49,8 +67,8 @@ const Login = () =>{
                 </div>
                 {error && <div style={{ color: 'red' }}>{error}</div>}
                 <button type="submit">Login</button>
-                <div className="forgot">
-                    <a href="/forgot">Forgot password?</a>
+                <div className="forgot1">
+                    <Link to="/forgot">Forgot password?</Link> 
                 </div>
             </form>
           </div>
