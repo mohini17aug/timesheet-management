@@ -16,39 +16,47 @@ const Login = () =>{
     e.preventDefault();
     console.log("user login");
     console.log(email+"---"+password+"---");
-    axios.post('http://localhost:8000/timesheet/token/', {
-        username: email,
+    axios.post('https://timesheet-drf-app.onrender.com/timesheet/token/', {
+        email: email,
         password: password,
     }, {
         headers: {
             'Content-Type': 'application/json',
-        },
+        }
     })
     .then(response => {
         console.log(response);
-        alert("login Successfull !!");
-        navigate("/");
-    })
-    .catch(error => {
-        console.error('Error:', error.response.data);
-        // // // Handle errors here
-        // if (error.response) {
-        //     // Server responded with a status other than 2xx
-        //     console.error('Response Error:', error.response);
-        //     console.log('Status:', error.response.status);
-        //     console.log('Data:', error.response.data);
-        //     console.log('Headers:', error.response.headers);
-        //     setError(error.response.data.detail || 'Login failed, please try again.');
-        // } else if (error.request) {
-        //     // Request was made but no response was received
-        //     console.error('No Response Error:', error.request);
-        //     setError('No response from server. Please check your network.');
-        // } else {
-        //     // Something happened in setting up the request
-        //     console.error('Axios Error:', error.message);
-        //     setError('Error setting up request. Please try again.');
-        // }
-        // console.log('Config:', error.config);
+        // Response was successful, now checking for specific status codes
+        if (response.status === 200) {
+          console.log('Success:', response.data["access"]);
+          localStorage.setItem("accesstoken",response.data["access"]);
+          localStorage.setItem("refreshtoken",response.data["refresh"]);
+          navigate("/employee");
+        } else if (response.status === 201) {
+          console.log('Resource created:', response.data);
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          // Error response received from the server
+          setError(error.response+" "+error.response.data);
+          if (error.response.status === 400) {
+            // Handle bad request
+            console.log('Bad request:', error.response.data);
+          } else if (error.response.status === 401) {
+            // Handle unauthorized
+            console.log('Unauthorized:', error.response.data);
+          } else if (error.response.status === 404) {
+            // Handle not found
+            console.log('Not found:', error.response.data);
+          }
+        } else if (error.request) {
+          // Request was made but no response was received
+          console.log('No response received:', error.request);
+        } else {
+          // Something happened in setting up the request
+          console.log('Error', error.message);
+        }
     });
     };
 
