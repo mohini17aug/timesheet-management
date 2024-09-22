@@ -56,17 +56,17 @@
     transform: translateY(-50%);
   }
 
-  .forgot {
+  .forgot1 {
     text-align: right;
     margin: 10px 0;
   }
   
-  .forgot a {
+  .forgot1 a {
     color: #fff;
     text-decoration: none;
   }
   
-  .forgot a:hover {
+  .forgot1 a:hover {
     text-decoration: underline;
   }
   

@@ -1,0 +1,109 @@
+/* Main container styling */
+.forgot{
+    display: flex;
+    justify-content: flex-end; /* Moves the form to the right */
+    align-items: center;
+    min-height: 100vh;
+    background: url('../Images/bglogin.jpg') no-repeat center center;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+}
+.forgot-password {
+    width: 400px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    border-radius: 10px;
+    padding: 30px 40px;
+    margin-right: 50px;
+  }
+  
+  /* Title styling */
+  .forgot-password h1 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+  }
+  
+  /* Input fields container */
+  .forgot-password input {
+    width: 80%;
+    max-width: 400px;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.2); /* Transparent white background */
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  /* Placeholder text color for input fields */
+  .forgot-password input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Dimmed placeholder color */
+  }
+  
+  /* Buttons styling */
+  .forgot-password button {
+    width: 80%;
+    max-width: 400px;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background-color: #fff; /* White background */
+    color: #333;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Button hover effect */
+  .forgot-password button:hover {
+    transform: translateY(-4px); /* Lift effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+  }
+  
+  /* Message and error styling */
+  .forgot-password div {
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  /* Success message */
+  .forgot-password div[style*="green"] {
+    color: lightgreen;
+  }
+  
+  /* Error message */
+  .forgot-password div[style*="red"] {
+    color: #ff5252; /* Bright red for errors */
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 600px) {
+    .forgot-password {
+      padding: 10px;
+    }
+  
+    .forgot-password h1 {
+      font-size: 24px;
+    }
+  
+    .forgot-password input,
+    .forgot-password button {
+      width: 100%;
+      max-width: none;
+    }
+  }
+  
