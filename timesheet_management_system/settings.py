@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -92,7 +93,8 @@ DATABASES = {
     }
 }
 
-#DATABASES["default"] = dj_database_url.parse("postgresql://timesheet_django_render_user:0Hz6TxQiyP10FIH5h2yfz7qlFNXr7uhx@dpg-crnd3ju8ii6s73ep1dh0-a.oregon-postgres.render.com/timesheet_django_render")
+
+DATABASES["default"] = dj_database_url.parse("postgresql://timesheet_django_render_user:0Hz6TxQiyP10FIH5h2yfz7qlFNXr7uhx@dpg-crnd3ju8ii6s73ep1dh0-a.oregon-postgres.render.com/timesheet_django_render")
 #postgresql://timesheet_django_render_user:0Hz6TxQiyP10FIH5h2yfz7qlFNXr7uhx@dpg-crnd3ju8ii6s73ep1dh0-a.oregon-postgres.render.com/timesheet_django_render
 
 
