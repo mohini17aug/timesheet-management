@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-p3oy$&q$v)-(9efm631jjqlso=)_+j4l$22cwz@%59vrcv0=c9')
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
@@ -145,12 +145,23 @@ REST_FRAMEWORK = {
     ),
 }
 
+#sendgrid:
+#mohi17dec@gmail.com
+#Administrator123!!##
+#recoveryCode:NJW14PMYVK661X6VLMXBA3D4
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Or another email service provider
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'timesheetbits@gmail.com'
-EMAIL_HOST_PASSWORD = 'ocrcomproneadmwq'
+EMAIL_HOST_USER = 'apikey'  # This is literally the word 'apikey'
+#EMAIL_HOST_PASSWORD = 'your-sendgrid-api-key'  # Your SendGrid API key
+#DEFAULT_FROM_EMAIL = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'mohi17dec@gmail.com')
+
+#EMAIL_HOST_PASSWORD = 'SG.Add below'
+#EMAIL_HOST_PASSWORD = 'DIsjZkjUQEiZaVLvir_2ow.fBCFvDhvXSpy_aOCdsj5IEMLWe4K-2iLrSof1ZfD4Rg'
+#DEFAULT_FROM_EMAIL =  'mohi17dec@gmail.com'
 
 AUTH_USER_MODEL="timesheet.CustomUser"
 
@@ -162,3 +173,27 @@ if not CORS_ALLOWED_ORIGINS or CORS_ALLOWED_ORIGINS == ['']:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
     ]
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'django_debug.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
+
+
+# REST_FRAMEWORK = {
+#     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+# }

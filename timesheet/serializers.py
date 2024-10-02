@@ -6,6 +6,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode
+from django.conf import settings  # Import settings to use DEFAULT_FROM_EMAIL
+import random
+from django.utils import timezone
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['id', 'first_name', 'last_name', 'email', 'manager', 'password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'manager', 'password', 'role']
     
     def create(self, validated_data):
         # Extract password from the validated data
@@ -85,27 +88,25 @@ class TimesheetEntryCreateSerializer(serializers.Serializer):
 
         return {"employee": employee, "timesheet": timesheet_data, "approved": approved}
 
-class PasswordResetSerializer(serializers.Serializer):
+class PasswordResetOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def validate_email(self, value):
         try:
             user = CustomUser.objects.get(email=value)
         except CustomUser.DoesNotExist:
-            raise serializers.ValidationError('No user is associated with this email address')
+            raise serializers.ValidationError('No user is associated with this email address.')
         return value
 
-    def send_reset_email(self, user):
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = self.context['request'].build_absolute_uri(
-            reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-        )
-        message = f'Click the link to reset your password: {reset_link}'
+    def send_otp_email(self, user):
+        otp_code = str(random.randint(100000, 999999))  # Generate a 6-digit OTP
+        user.set_otp(otp_code)
+
+        message = f'Your OTP for password reset is {otp_code}. It is valid for 10 minutes.'
         send_mail(
-            'Password Reset',
+            'Password Reset OTP',
             message,
-            'your-email@gmail.com',  # Sender's email
+            settings.DEFAULT_FROM_EMAIL,
             [user.email],
             fail_silently=False,
         )
@@ -113,27 +114,31 @@ class PasswordResetSerializer(serializers.Serializer):
     def save(self):
         email = self.validated_data['email']
         user = CustomUser.objects.get(email=email)
-        self.send_reset_email(user)
+        self.send_otp_email(user)
 
-class PasswordResetConfirmSerializer(serializers.Serializer):
+
+class PasswordResetConfirmOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp_code = serializers.CharField(max_length=6)
     new_password = serializers.CharField(write_only=True)
-    uidb64 = serializers.CharField()
-    token = serializers.CharField()
 
     def validate(self, data):
         try:
-            uid = urlsafe_base64_decode(data['uidb64']).decode()
-            user = CustomUser.objects.get(pk=uid)
-        except (CustomUser.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError('Invalid user')
+            user = CustomUser.objects.get(email=data['email'])
+        except CustomUser.DoesNotExist:
+            raise serializers.ValidationError('Invalid user.')
 
-        if not default_token_generator.check_token(user, data['token']):
-            raise serializers.ValidationError('Invalid token')
-        
+        if user.otp_code != data['otp_code']:
+            raise serializers.ValidationError('Invalid OTP.')
+
+        if timezone.now() > user.otp_expiry:
+            raise serializers.ValidationError('OTP has expired.')
+
         return data
 
     def save(self):
-        uid = urlsafe_base64_decode(self.validated_data['uidb64']).decode()
-        user = CustomUser.objects.get(pk=uid)
+        email = self.validated_data['email']
+        user = CustomUser.objects.get(email=email)
         user.set_password(self.validated_data['new_password'])
+        user.clear_otp()
         user.save()

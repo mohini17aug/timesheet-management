@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 class Admin(models.Model):
     name = models.CharField(max_length=100)
@@ -16,6 +18,13 @@ class Project(models.Model):
         return self.name
 
 class Employee(models.Model):
+
+    ROLE_CHOICES = [
+        ('Employee', 'Employee'),
+        ('Admin', 'Admin'),
+        ('Manager', 'Manager'),
+    ]
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -23,6 +32,8 @@ class Employee(models.Model):
     
     # Self-referential foreign key for manager relationship
     manager = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='subordinates')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Employee')  # Add role field
+
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -41,5 +52,18 @@ class TimesheetEntry(models.Model):
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
 
+    otp_code = models.CharField(max_length=6, null=True, blank=True)
+    otp_expiry = models.DateTimeField(null=True, blank=True)
+
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # This ensures username is still required, but login will be with email.
+    REQUIRED_FIELDS = ['username']
+
+    def set_otp(self, otp_code):
+        self.otp_code = otp_code
+        self.otp_expiry = timezone.now() + timedelta(minutes=10)  # OTP valid for 10 minutes
+        self.save()
+
+    def clear_otp(self):
+        self.otp_code = None
+        self.otp_expiry = None
+        self.save()
