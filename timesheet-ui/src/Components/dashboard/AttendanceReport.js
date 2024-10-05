@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 
 const AttendanceReport = () => {
-  const [selectedDate, setSelectedDate] = useState("5-11 Jul - Aug 24");
+  const [selectedDate, setSelectedDate] = useState("05 Aug - 11 Aug '24");
 
   const dates = [
-    "15-21 Jul 24",
-    "22-28 Jul 24",
-    "29-4 Jul 24",
-    "5-11 Jul - Aug 24",
-    "12-18 Aug 24",
-    "19-25 Aug 24",
-    "26-11 Aug 24",
+    "15 July - 21 July '24",
+    "22 July - 28 July '24",
+    "29 July - 04 Aug '24",
+    "05 Aug - 11 Aug '24",
+    "12 Aug - 18 Aug '24",
+    "19 Aug - 25 Aug '24",
+    "26 Aug - 3 Sept '24",
   ];
 
   return (

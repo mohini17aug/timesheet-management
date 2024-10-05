@@ -11,6 +11,8 @@ import {
   Paper,
 } from "@mui/material";
 import Remove from "@mui/icons-material/Remove";
+import axios from "axios";
+import { backendServerUrl } from "../../constants.ts";
 
 interface ProjectRow {
   project: string;
@@ -25,6 +27,7 @@ interface ProjectRow {
 }
 
 const AttendanceTable = () => {
+  const empId = 3; 
   const [rows, setRows] = useState<ProjectRow[]>([
     {
       project: "",
@@ -92,12 +95,59 @@ const AttendanceTable = () => {
     setRows((prevRows) => prevRows.filter((_, i) => i !== index));
   };
 
+  const handleSubmit = () => {
+    axios.post(`${backendServerUrl}timesheets/`, {
+      "employee": 4,
+      "timesheet": [
+        {
+          "project": 2,
+          "date": "2023-06-01",
+          "hours": 9
+        },
+        {
+          "project": 2,
+          "date": "2023-06-02",
+          "hours": 9
+        },
+        {
+          "project": 3,
+          "date": "2023-06-03",
+          "hours": 9
+        },
+        {
+          "project": 3,
+          "date": "2023-06-04",
+          "hours": 9
+        },
+        {
+          "project": 3,
+          "date": "2023-06-06",
+          "hours": 9
+        },
+        {
+          "project": 2,
+          "date": "2023-06-07",
+          "hours": 9
+        }
+      ],
+      "approved": false
+    }, {
+      headers: {
+          'Content-Type': 'application/json',
+      }
+  }).then(()=>{
+
+  }).catch(()=>{
+
+  })
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Emp Id</TableCell>
+            <TableCell>Emp Name</TableCell>
             <TableCell>Project</TableCell>
             <TableCell>Mon</TableCell>
             <TableCell>Tue</TableCell>
@@ -112,7 +162,7 @@ const AttendanceTable = () => {
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell> {/* Emp Id */}
+              <TableCell>Mohini</TableCell> {/* Emp Id */}
               <TableCell>
                 <TextField
                   value={row.project}
@@ -152,7 +202,7 @@ const AttendanceTable = () => {
         </TableBody>
       </Table>
       <Button onClick={handleAddRow} variant="contained" color="primary">
-        Add Project
+        Add Row
       </Button>
     </TableContainer>
   );

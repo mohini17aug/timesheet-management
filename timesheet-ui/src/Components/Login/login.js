@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 import { Link ,useNavigate} from "react-router-dom";
 import axios from "axios";
+import { backendServerUrl } from "../../constants.ts";
 
 const Login = () =>{
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ const Login = () =>{
     e.preventDefault();
     console.log("user login");
     console.log(email+"---"+password+"---");
-    axios.post('https://timesheet-drf-app.onrender.com/timesheet/token/', {
+    axios.post(`${backendServerUrl}token/`, {
         email: email,
         password: password,
     }, {
