@@ -1,22 +1,26 @@
-import React from 'react';
-import { Container, Button } from '@mui/material';
-import Sidebar from './SideBar.js';
-import TopNav from './TopNov.js';
-import AttendanceReport from './AttendanceReport.js';
-import AttendanceTable from './AttendanceTable.tsx';
+import React, { useState } from "react";
+import { Container, Button } from "@mui/material";
+import Sidebar from "./SideBar.js";
+import TopNav from "./TopNov.js";
+import AttendanceReport from "./AttendanceReport.js";
+import AttendanceTable from "./AttendanceTable.tsx";
 
 const Dashboard = () => {
+  const [selectedDateRange, setSelectedDateRange] = useState(
+    "05 Aug '24 - 11 Aug '24"
+  );
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <Sidebar />
       <div style={{ flexGrow: 1 }}>
         <TopNav />
         <Container>
-          <AttendanceReport />
-          <AttendanceTable />
-          <Button variant="contained" color="primary" style={{ marginTop: '20px' }}>
-            Submit
-          </Button>
+          <AttendanceReport
+            selectedDateRange={selectedDateRange}
+            setSelectedDateRange={setSelectedDateRange}
+          />
+          <AttendanceTable selectedDateRange={selectedDateRange} />
         </Container>
       </div>
     </div>
