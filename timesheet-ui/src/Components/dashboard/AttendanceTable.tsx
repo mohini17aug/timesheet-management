@@ -28,7 +28,7 @@ interface ProjectRow {
   sun: { date: string; hours: number };
   total: number;
 }
-
+const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTYwNTEzLCJpYXQiOjE3MjgxNTk2MTMsImp0aSI6IjVmOGQ5MzEzZTk4MTRkYjViYjg3Y2Y1Yjg3M2YxYzc0IiwidXNlcl9pZCI6NH0.vT5qFknMfU8cq_6Dcdz9z1fCPlFWgCxmz4fiNMZlMRc";
 const AttendanceTable = (props) => {
   const empId = 3;
   const dates = formatDateRange(props.selectedDateRange);
@@ -49,7 +49,6 @@ const AttendanceTable = (props) => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTU2MDg4LCJpYXQiOjE3MjgxNTUxODgsImp0aSI6IjRmOGE1MTdiODA1MDQzMTZiNTE3NjQxOWQ3ZDEzODcwIiwidXNlcl9pZCI6NX0.tma0jMt9uqhvR4xCdpr4b4CbbHtxcEDNAtFjyt_PqHY"; 
     axios
       .get(`${backendServerUrl}projects/`, {
         headers: {
@@ -65,40 +64,45 @@ const AttendanceTable = (props) => {
       });
   }, []);
 
+  const fetchProjectIdByName = async (projectName: string) => {
+    try {
+      const response = await axios.get(
+        `${backendServerUrl}projects/get-id-by-name/?name=${projectName}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.id;
+    } catch (error) {
+      console.error("Error fetching project ID:", error);
+      return null;
+    }
+  };
+
   const handleInputChange = (
     index: number,
     field: keyof ProjectRow,
     value: string
   ) => {
     const newRows = [...rows];
-
-    // Validate only the numeric fields, skip 'project'
-    if (field === "project" || value === "" || /^[0-9]*$/.test(value)) {
-      if (field !== "project") {
-        newRows[index][field].hours = value;
-      } else {
-        newRows[index][field] = Number(value);
-      }
-
-      // Calculate the total only for numeric fields
-      if (field !== "project" && Number(value) < 9) {
-        const days = [
-          "mon",
-          "tue",
-          "wed",
-          "thu",
-          "fri",
-          "sat",
-          "sun",
-        ] as (keyof ProjectRow)[];
-        const total = days.reduce((sum, day) => {
-          return sum + (parseFloat(newRows[index][day].hours) || 0);
-        }, 0);
-        newRows[index].total = total;
-      }
-
-      setRows(newRows);
+  
+    if (field === "project") {
+      newRows[index][field] = Number(value); // Directly assign the project ID
+    } else if (value === "" || /^[0-9]*$/.test(value)) {
+      newRows[index][field].hours = Number(value); // Ensure hours are stored as numbers
     }
+  
+    if (field !== "project" && Number(value) < 9) {
+      const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as (keyof ProjectRow)[];
+      const total = days.reduce((sum, day) => {
+        return sum + (parseFloat(newRows[index][day].hours) || 0);
+      }, 0);
+      newRows[index].total = total;
+    }
+  
+    setRows(newRows);
+    
   };
 
   const handleAddRow = () => {
@@ -123,7 +127,7 @@ const AttendanceTable = (props) => {
   };
 
   const handleSubmit = () => {
-    const timesheet = rows.map((row) => {
+    const timesheet = rows.flatMap((row) => {
       return [
         {
           project: row.project,
@@ -171,6 +175,7 @@ const AttendanceTable = (props) => {
       .post(`${backendServerUrl}timesheets/`, timesheetData, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {})
