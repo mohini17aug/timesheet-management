@@ -14,6 +14,19 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['get'], url_path='get-id-by-name')
+    def get_id_by_name(self, request):
+        project_name = request.query_params.get('name')
+        if not project_name:
+            return Response({'error': 'Project name is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            project = Project.objects.get(name=project_name)
+            return Response({'id': project.id}, status=status.HTTP_200_OK)
+        except Project.DoesNotExist:
+            return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+   
+
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -6,6 +6,8 @@ import {
   TableHead,
   TableRow,
   Button,
+  Select,
+  MenuItem,
   TextField,
   TableContainer,
   Paper,
@@ -43,6 +45,25 @@ const AttendanceTable = (props) => {
       total: 0,
     },
   ]);
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTU2MDg4LCJpYXQiOjE3MjgxNTUxODgsImp0aSI6IjRmOGE1MTdiODA1MDQzMTZiNTE3NjQxOWQ3ZDEzODcwIiwidXNlcl9pZCI6NX0.tma0jMt9uqhvR4xCdpr4b4CbbHtxcEDNAtFjyt_PqHY"; 
+    axios
+      .get(`${backendServerUrl}projects/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data); 
+        setProjects(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+      });
+  }, []);
 
   const handleInputChange = (
     index: number,
@@ -179,12 +200,18 @@ const AttendanceTable = (props) => {
               <TableRow key={index}>
                 <TableCell>Mohini</TableCell> {/* Emp Id */}
                 <TableCell>
-                  <TextField
+                <Select
                     value={row.project}
                     onChange={(e) =>
-                      handleInputChange(index, "project", e.target.value)
+                      handleInputChange(index, "project", e.target.value as string)
                     }
-                  />
+                  >
+                    {projects.map((project) => (
+                      <MenuItem key={project.id} value={project.id}>
+                        {project.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </TableCell>
                 {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map(
                   (day) => (

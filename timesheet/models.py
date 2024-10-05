@@ -11,7 +11,7 @@ class Admin(models.Model):
     weekly_off_days = models.CharField(max_length=100)  # Example: "Saturday, Sunday"
 
 class Project(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
