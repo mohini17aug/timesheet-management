@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Employee,  TimesheetEntry, Project
 from rest_framework.views import APIView
-from .serializers import EmployeeSerializer, TimesheetEntrySerializer, TimesheetEntryCreateSerializer, ProjectSerializer, PasswordResetOTPSerializer, PasswordResetConfirmOTPSerializer
+from .serializers import EmployeeSerializer, TimesheetEntrySerializer, EmployeeTimesheetSerializer,TimesheetEntryCreateSerializer, ProjectSerializer, PasswordResetOTPSerializer, PasswordResetConfirmOTPSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -42,20 +42,26 @@ class TimesheetEntryViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def subordinates_timesheets(self, request, pk=None):
         try:
-            manager = Employee.objects.get(pk=pk)  # Get the manager by ID
+            # Get the manager by ID
+            manager = Employee.objects.get(pk=pk)
+
+            # Ensure the user is a manager
             if manager.role != 'Manager':
                 return Response({"error": "This user is not a manager"}, status=400)
 
-            # Get all employees (subordinates) reporting to this manager
+            # Get all employees reporting to this manager
             subordinates = Employee.objects.filter(manager=manager)
 
-            # Get all timesheets related to these subordinates
-            timesheets = TimesheetEntry.objects.filter(employee__in=subordinates)
-
-            serializer = TimesheetEntrySerializer(timesheets, many=True)
+            # Serialize the data including timesheets for each subordinate
+            serializer = EmployeeTimesheetSerializer(subordinates, many=True)
             return Response(serializer.data)
         except Employee.DoesNotExist:
             return Response({"error": "Manager not found"}, status=404)
+        except Exception as e:
+            # Catch any other exceptions and log them
+            return Response({"error": str(e)}, status=500)
+
+
 
 # class PasswordResetRequestView(APIView):
 #     def post(self, request, *args, **kwargs):

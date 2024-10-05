@@ -39,7 +39,7 @@ class Employee(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 class TimesheetEntry(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # Foreign Key to Employee
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='timesheets')  # Foreign Key to Employee
     project = models.ForeignKey(Project, on_delete=models.CASCADE) 
     date = models.DateField()
     hours = models.IntegerField()
@@ -47,7 +47,6 @@ class TimesheetEntry(models.Model):
 
     class Meta:
         unique_together = ['employee', 'date', 'project']  # Ensures one entry per date
-
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)

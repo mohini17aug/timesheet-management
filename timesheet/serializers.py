@@ -45,6 +45,10 @@ class TimesheetEntryNestedSerializer(serializers.Serializer):
     date = serializers.DateField()
     hours = serializers.IntegerField()
 
+    class Meta:
+       model = TimesheetEntry
+       fields = ['project', 'date', 'hours']
+
 class TimesheetEntrySerializer(serializers.ModelSerializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
@@ -52,6 +56,19 @@ class TimesheetEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = TimesheetEntry
         fields = ['id', 'employee', 'project', 'date', 'hours', 'approved']
+
+class EmployeeTimesheetSerializer(serializers.ModelSerializer):
+    timesheet = TimesheetEntryNestedSerializer(many=True, source='timesheets')  # Gets related timesheet entries
+    approved = serializers.SerializerMethodField()  # Method field to get approval status
+
+    class Meta:
+        model = Employee
+        fields = ['id', 'first_name' ,   'last_name', 	'email'  , 'timesheet', 'approved']
+
+    def get_approved(self, obj):
+        # Assume timesheets are approved if all entries are approved
+        return all(entry.approved for entry in obj.timesheets.all())
+
 
 class TimesheetEntryCreateSerializer(serializers.Serializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
