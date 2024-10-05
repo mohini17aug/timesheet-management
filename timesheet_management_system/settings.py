@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -175,6 +176,13 @@ if not CORS_ALLOWED_ORIGINS or CORS_ALLOWED_ORIGINS == ['']:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
     ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Set the access token expiry
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Set the refresh token expiry
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 # LOGGING = {
 #     'version': 1,
