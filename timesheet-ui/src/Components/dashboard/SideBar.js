@@ -1,32 +1,77 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import FolderIcon from '@mui/icons-material/Folder';
-import GroupIcon from '@mui/icons-material/Group';
-import TableChartIcon from '@mui/icons-material/TableChart';
-import PersonIcon from '@mui/icons-material/Person';
+import React from "react";
+import { Drawer, List, ListItem, ListItemIcon } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import FolderIcon from "@mui/icons-material/Folder";
+import GroupIcon from "@mui/icons-material/Group";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import PersonIcon from "@mui/icons-material/Person";
 
 const Sidebar = () => {
   return (
     <Drawer variant="permanent">
-      <List>
+      <List style={{ backgroundColor: "#494FBF", height: "100%" }}>
         <ListItem>
-          <img src="logo.png" alt="Logo" style={{ padding: '10px' }} />
+          <b style={{ color: "aliceblue" }}>LOGO</b>
         </ListItem>
         <ListItem button>
-          <ListItemIcon><DashboardIcon /></ListItemIcon>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <DashboardIcon />
+          </ListItemIcon>
         </ListItem>
         <ListItem button>
-          <ListItemIcon><FolderIcon /></ListItemIcon>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <FolderIcon />
+          </ListItemIcon>
         </ListItem>
         <ListItem button>
-          <ListItemIcon><GroupIcon /></ListItemIcon>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <GroupIcon />
+          </ListItemIcon>
         </ListItem>
         <ListItem button>
-          <ListItemIcon><TableChartIcon /></ListItemIcon>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <TableChartIcon />
+          </ListItemIcon>
         </ListItem>
         <ListItem button>
-          <ListItemIcon><PersonIcon /></ListItemIcon>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <PersonIcon />
+          </ListItemIcon>
         </ListItem>
       </List>
     </Drawer>
