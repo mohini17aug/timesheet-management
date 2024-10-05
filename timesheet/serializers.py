@@ -60,10 +60,16 @@ class TimesheetEntrySerializer(serializers.ModelSerializer):
 class EmployeeTimesheetSerializer(serializers.ModelSerializer):
     timesheet = TimesheetEntryNestedSerializer(many=True, source='timesheets')  # Gets related timesheet entries
     approved = serializers.SerializerMethodField()  # Method field to get approval status
+    #employee = serializers.IntegerField(source='id')  # Add the employee ID field
 
     class Meta:
         model = Employee
         fields = ['id', 'first_name' ,   'last_name', 	'email'  , 'timesheet', 'approved']
+    
+    def get_timesheet(self, obj):
+        # Use the filtered timesheets from the context
+        timesheets = self.context.get('timesheets', TimesheetEntry.objects.none())
+        return TimesheetEntryNestedSerializer(timesheets, many=True).data
 
     def get_approved(self, obj):
         # Assume timesheets are approved if all entries are approved

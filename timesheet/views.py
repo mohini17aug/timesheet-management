@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import action
+from datetime import datetime
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -60,6 +61,59 @@ class TimesheetEntryViewSet(viewsets.ModelViewSet):
         except Exception as e:
             # Catch any other exceptions and log them
             return Response({"error": str(e)}, status=500)
+
+     # Custom action for employees to see their own timesheets with an optional date range filter
+    @action(detail=False, methods=['get'])
+    def my_timesheets(self, request):
+        # Get the currently logged-in employee
+        employee = request.user.employee
+
+        # Get optional start_date and end_date from query parameters
+        start_date_str = request.query_params.get('start_date')
+        end_date_str = request.query_params.get('end_date')
+
+        # Parse the date strings into date objects if they are present
+        if start_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                start_date = None
+                print(f"Invalid start_date format: {start_date_str}")
+        else:
+            start_date = None
+
+        if end_date_str:
+            try:
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                end_date = None
+                print(f"Invalid end_date format: {end_date_str}")
+        else:
+            end_date = None
+
+        # Print the parsed dates
+        print(f"Parsed start_date: {start_date}")
+        print(f"Parsed end_date: {end_date}")
+
+        # Filter timesheets by the employee and date range
+        timesheets = TimesheetEntry.objects.filter(employee=employee)
+        if start_date and end_date:
+            print("Applying date range filter")
+            timesheets = timesheets.filter(date__range=[start_date, end_date])
+        elif start_date:
+            print("Applying start_date filter")
+            timesheets = timesheets.filter(date__gte=start_date)
+        elif end_date:
+            print("Applying end_date filter")
+            timesheets = timesheets.filter(date__lte=end_date)
+
+        # Serialize the filtered timesheets
+        serializer = TimesheetEntrySerializer(timesheets, many=True)
+        return Response({
+            'employee': employee.id,
+            'timesheet': serializer.data,
+            'approved': all(entry.approved for entry in timesheets)
+        })
 
 
 
