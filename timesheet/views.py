@@ -32,6 +32,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAuthenticated]
 
+    def list(self, request, *args, **kwargs):
+        email = request.query_params.get('email', None)
+        if email:
+            try:
+                employee = Employee.objects.get(email=email)
+                serializer = self.get_serializer(employee)
+                return Response(serializer.data)
+            except Employee.DoesNotExist:
+                return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return super().list(request, *args, **kwargs)
+
      # Custom action to retrieve employees associated with a specific manager
     @action(detail=True, methods=['get'])
     def subordinates(self, request, pk=None):
