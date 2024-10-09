@@ -32,7 +32,26 @@ const Login = () =>{
           console.log('Success:', response.data["access"]);
           localStorage.setItem("accesstoken",response.data["access"]);
           localStorage.setItem("refreshtoken",response.data["refresh"]);
-          navigate("/dashboard");
+          console.log(email);
+          console.log(localStorage.getItem("accesstoken"));
+          axios.get(`${backendServerUrl}employees/?email=${email}`,{
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+          }).then(response =>{
+            if(response.status==200){
+              const role=response.data["role"];
+              localStorage.setItem("role",role);
+              localStorage.setItem("name",response.data["first_name"]);
+              if(role=="Employee" || role=="Manager"){
+                navigate("/dashboard");
+              } 
+              else{
+                navigate("/admin");
+              } 
+            }
+          });
+         
         } else if (response.status === 201) {
           console.log('Resource created:', response.data);
         }
@@ -40,13 +59,14 @@ const Login = () =>{
       .catch(error => {
         if (error.response) {
           // Error response received from the server
-          setError(error.response+" "+error.response.data);
+          
           if (error.response.status === 400) {
             // Handle bad request
             console.log('Bad request:', error.response.data);
           } else if (error.response.status === 401) {
             // Handle unauthorized
-            console.log('Unauthorized:', error.response.data);
+            console.log('Unauthorized:', error.response.data["detail"]);
+            setError(error.response+" "+error.response.data["detail"]);
           } else if (error.response.status === 404) {
             // Handle not found
             console.log('Not found:', error.response.data);

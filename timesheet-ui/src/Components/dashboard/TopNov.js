@@ -15,7 +15,7 @@ const TopNav = () => {
           <InputBase placeholder="Search…" style={{ marginLeft: "10px" }} />
         </div>
         <Typography variant="h6" style={{ flexGrow: 1, textAlign: "center" }}>
-          Good Morning, Mohini!
+          Good Morning, {localStorage.getItem("name")}!
         </Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body1" style={{ marginRight: "10px" }}>

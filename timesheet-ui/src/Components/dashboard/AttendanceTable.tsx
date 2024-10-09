@@ -28,7 +28,7 @@ interface ProjectRow {
   sun: { date: string; hours: number };
   total: number;
 }
-const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTYwNTEzLCJpYXQiOjE3MjgxNTk2MTMsImp0aSI6IjVmOGQ5MzEzZTk4MTRkYjViYjg3Y2Y1Yjg3M2YxYzc0IiwidXNlcl9pZCI6NH0.vT5qFknMfU8cq_6Dcdz9z1fCPlFWgCxmz4fiNMZlMRc";
+//const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTYwNTEzLCJpYXQiOjE3MjgxNTk2MTMsImp0aSI6IjVmOGQ5MzEzZTk4MTRkYjViYjg3Y2Y1Yjg3M2YxYzc0IiwidXNlcl9pZCI6NH0.vT5qFknMfU8cq_6Dcdz9z1fCPlFWgCxmz4fiNMZlMRc";
 const AttendanceTable = (props) => {
   const empId = 3;
   const dates = formatDateRange(props.selectedDateRange);
@@ -52,7 +52,7 @@ const AttendanceTable = (props) => {
     axios
       .get(`${backendServerUrl}projects/`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
         },
       })
       .then((response) => {
@@ -69,7 +69,7 @@ const AttendanceTable = (props) => {
       const response = await axios.get(
         `${backendServerUrl}projects/get-id-by-name/?name=${projectName}`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
           },
         }
       );
@@ -175,7 +175,7 @@ const AttendanceTable = (props) => {
       .post(`${backendServerUrl}timesheets/`, timesheetData, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
         },
       })
       .then(() => {})
@@ -203,7 +203,7 @@ const AttendanceTable = (props) => {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={index}>
-                <TableCell>Mohini</TableCell> {/* Emp Id */}
+                <TableCell>{localStorage.getItem("name")}</TableCell> {/* Emp Id */}
                 <TableCell>
                 <Select
                     value={row.project}

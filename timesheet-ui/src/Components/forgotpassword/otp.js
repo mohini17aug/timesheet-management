@@ -4,16 +4,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { backendServerUrl } from "../../constants.ts";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
+const Otp = () => {
+  const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const navigate=useNavigate();
 
-  const sendEmail = () => {
-    localStorage.setItem("email",email);
+  const sendOtp = () => {
     axios.post(`${backendServerUrl}password-reset/`, {
-      email: email
+      otp: otp
   }, {
       headers: {
           'Content-Type': 'application/json',
@@ -59,16 +58,16 @@ const ForgotPassword = () => {
   return (
     <div className="forgot">
     <div className="forgot-password">
-      <h1>Forgot Password</h1>
+      <h1>Enter Otp</h1>
 
       <div>
             <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Enter your Otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
             />
-            <button onClick={sendEmail}>Send Verification Code</button>
+            <button onClick={sendOtp}>Send Verification Code</button>
           </div>
 
       {message && <div style={{ color: "green" }}>{message}</div>}
@@ -78,4 +77,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default Otp;

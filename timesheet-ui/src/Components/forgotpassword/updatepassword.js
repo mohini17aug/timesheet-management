@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const UpdatePassword = () => {
   const [newPassword, setNewPassword] = useState("");
+  const [otp,setOtp]=useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -16,6 +17,8 @@ const UpdatePassword = () => {
       return;
     }
     axios.post('https://timesheet-drf-app.onrender.com/timesheet/password-reset-confirm/', {
+        email : localStorage.getItem("email"),
+        otp_code: otp,
         new_password: newPassword
     }, {
         headers: {
@@ -28,6 +31,8 @@ const UpdatePassword = () => {
         if (response.status === 200) {
           // Handle success (OK)
           console.log('Success:', response.data);
+          console.log("update Successful");
+          alert("Updated Successfully");
           navigate("/");
         } else if (response.status === 201) {
           // Handle resource created
@@ -66,6 +71,12 @@ const UpdatePassword = () => {
     <div className="forgot-password">
       <h1>Update Password</h1>
       <div>
+      <input
+              type="text"
+              placeholder="Enter your Otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
           <input
             type="password"
             placeholder="New password"
