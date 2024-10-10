@@ -34,6 +34,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         email = request.query_params.get('email', None)
+        role = request.query_params.get('role', None)
         if email:
             try:
                 employee = Employee.objects.get(email=email)
@@ -41,6 +42,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data)
             except Employee.DoesNotExist:
                 return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        elif role:
+            try:
+                employees = Employee.objects.filter(role=role)
+                serializer = EmployeeSerializer(employees, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Employee.DoesNotExist:
+                return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+        
         else:
             return super().list(request, *args, **kwargs)
 
