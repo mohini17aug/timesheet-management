@@ -1,0 +1,29 @@
+/* styles.css */
+.left-pane {
+    width: 200px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9; /* Light background for better contrast */
+  }
+  
+  .left-pane .list-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .left-pane .list-item:hover {
+    background-color: #e0e0e0; /* Hover effect */
+  }
+  
+  .left-pane .list-item.selected {
+    background-color: #d0d0d0; /* Selected item background */
+    font-weight: bold;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Space between items */
+  }
