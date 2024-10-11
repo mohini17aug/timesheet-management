@@ -3,7 +3,7 @@
     justify-content: flex-end; /* Moves the form to the right */
     align-items: center;
     min-height: 100vh;
-    background: url('../Images/bglogin.jpg') no-repeat center center;
+    background: url('../utils/images/bglogin.jpg') no-repeat center center;
     background-size: cover;
     font-family: 'Roboto', sans-serif;
   }

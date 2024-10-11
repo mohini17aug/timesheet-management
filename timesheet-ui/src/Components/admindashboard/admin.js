@@ -16,7 +16,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider,
   Table,
   TableBody,
   TableCell,
@@ -63,7 +62,7 @@ const AdminDashboard = () => {
   const [manager, setManager] = useState("");
   const [managersList, setManagersList] = useState([]);
 
-  const [emailForManagerChange, setEmailForManagerChange] = useState("");
+  const [ _,setEmailForManagerChange] = useState("");
   const [currentManager, setCurrentManager] = useState("");
   const [updateManager, setUpdateManager] = useState("");
   const [employeeIdManager, setEmployeeIdManager] = useState(null);
