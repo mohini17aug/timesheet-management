@@ -1,3 +1,19 @@
+export const formatToCustomDate = (dateStr) => {
+  const date = new Date(dateStr);
+
+  // Get day, month, and year
+  const day = String(date.getDate()).padStart(2, "0"); // Day (e.g., 05)
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const month = monthNames[date.getMonth()]; // Month abbreviation (e.g., Aug)
+  const year = String(date.getFullYear()).slice(-2); // Last two digits of the year (e.g., 24)
+
+  // Return the formatted string
+  return `${day} ${month} '${year}`;
+};
+
+
+
+
 export const formatDateRange = (dateRange) => {
   const [startDateStr, endDateStr] = dateRange?.split(" - ");
 
