@@ -148,8 +148,7 @@ class TimesheetEntryViewSet(viewsets.ModelViewSet):
         serializer = TimesheetEntrySerializer(timesheets, many=True)
         return Response({
             'employee': employee.id,
-            'timesheet': serializer.data,
-            'approved': all(entry.approved for entry in timesheets)
+            'timesheet': serializer.data
         })
 
 
