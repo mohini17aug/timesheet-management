@@ -64,6 +64,8 @@ const AttendanceTable = (props) => {
       });
   }, []);
 
+
+
   const fetchProjectIdByName = async (projectName: string) => {
     try {
       const response = await axios.get(
@@ -89,8 +91,9 @@ const AttendanceTable = (props) => {
   
     if (field === "project") {
       newRows[index][field] = Number(value); // Directly assign the project ID
-    } else if (value === "" || /^[0-9]*$/.test(value)) {
-      newRows[index][field].hours = Number(value); // Ensure hours are stored as numbers
+    } else if (value === "" || /^[0-8]*$/.test(value)) {
+      const hourValue = Math.max(0, Math.min(Number(value), 8)); // Restrict to 0-8 hours
+      newRows[index][field].hours = hourValue;
     }
   
     if (field !== "project" && Number(value) < 9) {
@@ -157,12 +160,12 @@ const AttendanceTable = (props) => {
         {
           project: row.project,
           date: row.sat.date,
-          hours: Number(row.sat.hours),
+          hours: 0,
         },
         {
           project: row.project,
           date: row.sun.date,
-          hours: Number(row.sun.hours),
+          hours: 0,
         },
       ];
     });
@@ -222,7 +225,7 @@ const AttendanceTable = (props) => {
                     ))}
                   </Select>
                 </TableCell>
-                {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map(
+                {["mon", "tue", "wed", "thu", "fri"].map(
                   (day) => (
                     <TableCell key={day}>
                       <TextField
@@ -239,6 +242,20 @@ const AttendanceTable = (props) => {
                     </TableCell>
                   )
                 )}
+                <TableCell>
+                  <TextField
+                    type="text"
+                    value={row.sat.hours}
+                    disabled
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    type="text"
+                    value={row.sun.hours}
+                    disabled
+                  />
+                  </TableCell>
                 <TableCell>{row.total}</TableCell>
                 <Button
                   size="small"
@@ -254,7 +271,8 @@ const AttendanceTable = (props) => {
             ))}
           </TableBody>
         </Table>
-        <Button onClick={handleAddRow} variant="contained" color="primary">
+        <Button onClick={handleAddRow} 
+        variant="contained" color="primary" disabled={rows.length >=projects.length}>
           Add Row
         </Button>
       </TableContainer>
