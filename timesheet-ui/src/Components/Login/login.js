@@ -2,14 +2,13 @@ import {React,useState} from "react";
 import './login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { Link ,useNavigate} from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import axios from "axios";
 import { backendServerUrl } from "../../constants.ts";
 
 const Login = () =>{
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const navigate=useNavigate();
 
@@ -39,14 +38,14 @@ const Login = () =>{
               Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
             },
           }).then(response =>{
-            if(response.status==200){
+            if(response.status===200){
               const role=response.data["role"];
               localStorage.setItem("role",role);
               localStorage.setItem("name",response.data["first_name"]);
-              if(role=="Employee" ){
-                navigate("/dashboard");
+              if(role==="Employee" ){
+                navigate("/employee");
               } 
-              else if(role=="Manager"){
+              else if(role==="Manager"){
                 navigate("/manager");
               }
               else{

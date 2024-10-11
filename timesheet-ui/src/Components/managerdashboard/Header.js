@@ -11,7 +11,6 @@ const Header = () => {
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography variant="body2" sx={{ mr: 2 }}>Role: Project Manager</Typography>
         <Avatar src="profile_image_url" />
-        <Typography variant="body2" sx={{ ml: 2 }}>Last Log in: 6/Sep/2024 10:24am</Typography>
       </Box>
     </Box>
   );
