@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
+import { formatToCustomDate } from "../../utils.ts";
 
 const getWeekStartAndEnd = (offset) => {
   const today = new Date();
@@ -43,7 +44,7 @@ const isCurrentWeek = (weekStartDate) => {
   return weekStartDate.toDateString() === startOfThisWeek.toDateString();
 };
 
-const AttendanceReport = () => {
+const AttendanceReport = ({setSelectedDateRange}) => {
   const [weekOffset, setWeekOffset] = useState(0); // Initial offset for weeks
   const weeksToShow = 4; // Number of weeks to show at a time
   const weeks = getMultipleWeeks(weekOffset, weeksToShow);
@@ -61,6 +62,7 @@ const AttendanceReport = () => {
   };
 
   const handleWeekClick = (week) => {
+    setSelectedDateRange(`${formatToCustomDate(week.start)} - ${formatToCustomDate(week.end)}`);
     setSelectedWeek(week.startDateObj); // Set the clicked week as the selected one
   };
 

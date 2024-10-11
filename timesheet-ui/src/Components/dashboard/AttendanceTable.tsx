@@ -30,8 +30,10 @@ interface ProjectRow {
 }
 
 const AttendanceTable = (props) => {
+  const {selectedDateRange} = props;
   const empId = 3;
-  const dates = formatDateRange(props.selectedDateRange);
+  const dates = formatDateRange(selectedDateRange);
+  console.log(dates);
   const [rows, setRows] = useState<ProjectRow[]>([
     {
       project: 0,
@@ -47,6 +49,9 @@ const AttendanceTable = (props) => {
   ]);
 
   const [projects, setProjects] = useState([]);
+  const [isEditable, setIsEditable] = useState(true);
+  const[isSubmitDisabled, setIsSubmitDisabled] =useState(true);
+
 
   useEffect(() => {
     axios
@@ -64,7 +69,22 @@ const AttendanceTable = (props) => {
       });
   }, []);
 
-
+  useEffect(() => {
+    // Update the rows with new dates when the selectedDateRange changes
+   
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        mon: { date: dates[0], hours: row.mon.hours },
+        tue: { date: dates[1], hours: row.tue.hours },
+        wed: { date: dates[2], hours: row.wed.hours },
+        thu: { date: dates[3], hours: row.thu.hours },
+        fri: { date: dates[4], hours: row.fri.hours },
+        sat: { date: dates[5], hours: row.sat.hours },
+        sun: { date: dates[6], hours: row.sun.hours },
+      }))
+    );
+  },[props.selectedDateRange]);
 
   const fetchProjectIdByName = async (projectName: string) => {
     try {
@@ -81,6 +101,43 @@ const AttendanceTable = (props) => {
       return null;
     }
   };
+
+  // Calculate the total hours for each day across all projects
+  const calculateDailyTotals = () => {
+    const totals = {
+      mon: 0,
+      tue: 0,
+      wed: 0,
+      thu: 0,
+      fri: 0,
+      sat: 0,
+      sun: 0,
+    };
+
+    rows.forEach((row) => {
+      totals.mon += row.mon.hours;
+      totals.tue += row.tue.hours;
+      totals.wed += row.wed.hours;
+      totals.thu += row.thu.hours;
+      totals.fri += row.fri.hours;
+      totals.sat += row.sat.hours;
+      totals.sun += row.sun.hours;
+    });
+
+    return totals;
+  };
+  const dailyTotals = calculateDailyTotals();
+
+  useEffect(() => {
+    const totalExceedsLimit = Object.values(dailyTotals).some(hours => hours > 8);
+    setIsSubmitDisabled(totalExceedsLimit);
+  }, [dailyTotals]);
+
+  const calculateTotalHoursForWeek = () => {
+    return rows.reduce((sum, row) => sum + row.total, 0);
+  };
+
+  const totalHoursForWeek = calculateTotalHoursForWeek();
 
   const handleInputChange = (
     index: number,
@@ -101,8 +158,13 @@ const AttendanceTable = (props) => {
       const total = days.reduce((sum, day) => {
         return sum + (parseFloat(newRows[index][day].hours) || 0);
       }, 0);
+
+      if(total>40){
+        alert("Total hours for week cannot exceed 40");
+      }
       newRows[index].total = total;
     }
+
   
     setRows(newRows);
     
@@ -269,18 +331,36 @@ const AttendanceTable = (props) => {
                 </Button>
               </TableRow>
             ))}
+             <TableRow>
+              <TableCell colSpan={1}>Daily Total</TableCell>
+              <TableCell>{dailyTotals.mon > 8 ? 'Exceeds 8' : dailyTotals.mon}</TableCell>
+              <TableCell>{dailyTotals.tue > 8 ? 'Exceeds 8' : dailyTotals.tue}</TableCell>
+              <TableCell>{dailyTotals.wed > 8 ? 'Exceeds 8' : dailyTotals.wed}</TableCell>
+              <TableCell>{dailyTotals.thu > 8 ? 'Exceeds 8' : dailyTotals.thu}</TableCell>
+              <TableCell>{dailyTotals.fri > 8 ? 'Exceeds 8' : dailyTotals.fri}</TableCell>
+              <TableCell>{dailyTotals.sat > 8 ? 'Exceeds 8' : dailyTotals.sat}</TableCell>
+              <TableCell>{dailyTotals.sun > 8 ? 'Exceeds 8' : dailyTotals.sun}</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
           </TableBody>
         </Table>
         <Button onClick={handleAddRow} 
         variant="contained" color="primary" disabled={rows.length >=projects.length}>
           Add Row
         </Button>
+        <div>Total Hours for the Week: {totalHoursForWeek}</div>
       </TableContainer>
       <Button
         variant="contained"
-        color="primary"
-        style={{ marginTop: "20px" }}
+        color={isSubmitDisabled ? "default" : "primary"} // Change color based on disabled state
+        style={{
+          marginTop: "20px",
+          backgroundColor: isSubmitDisabled ? '#ccc' : undefined, // Custom background color for disabled state
+          color: isSubmitDisabled ? '#666' : undefined, // Custom text color for disabled state
+          cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
+        }}
         onClick={handleSubmit}
+        disabled={isSubmitDisabled}
       >
         Submit
       </Button>
