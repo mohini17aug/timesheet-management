@@ -28,7 +28,7 @@ interface ProjectRow {
   sun: { date: string; hours: number };
   total: number;
 }
-//const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTYwNTEzLCJpYXQiOjE3MjgxNTk2MTMsImp0aSI6IjVmOGQ5MzEzZTk4MTRkYjViYjg3Y2Y1Yjg3M2YxYzc0IiwidXNlcl9pZCI6NH0.vT5qFknMfU8cq_6Dcdz9z1fCPlFWgCxmz4fiNMZlMRc";
+
 const AttendanceTable = (props) => {
   const empId = 3;
   const dates = formatDateRange(props.selectedDateRange);
@@ -203,7 +203,11 @@ const AttendanceTable = (props) => {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={index}>
-                <TableCell>{localStorage.getItem("name")}</TableCell> {/* Emp Id */}
+                {index === 0 && (
+                  <TableCell rowSpan={index}>
+                    {localStorage.getItem("name")}
+                  </TableCell>
+                )}
                 <TableCell>
                 <Select
                     value={row.project}
