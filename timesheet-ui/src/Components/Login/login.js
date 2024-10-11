@@ -2,14 +2,13 @@ import {React,useState} from "react";
 import './login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { Link ,useNavigate} from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import axios from "axios";
 import { backendServerUrl } from "../../constants.ts";
 
 const Login = () =>{
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
   const [error, setError] = useState('');
   const navigate=useNavigate();
 
@@ -47,7 +46,7 @@ const Login = () =>{
               localStorage.setItem("id",response.data["id"]);
               if(role=="Employee" || role=="Manager"){
                 navigate("/dashboard");
-              } 
+              }
               else{
                 navigate("/admin");
               } 

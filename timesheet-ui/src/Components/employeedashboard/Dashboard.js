@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Container, Button } from "@mui/material";
-import Sidebar from "./SideBar.js";
+import { Container } from "@mui/material";
+import Sidebar from "../common/SideBar.js";
 import TopNav from "./TopNov.js";
-import AttendanceReport from "./AttendanceReport.js";
+import AttendanceReport from "../common/AttendanceReport.js";
 import AttendanceTable from "./AttendanceTable.tsx";
 
-const Dashboard = () => {
+const EmployeeDashboard = () => {
   const [selectedDateRange, setSelectedDateRange] = useState(
     "05 Aug '24 - 11 Aug '24"
   );
@@ -27,4 +27,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default EmployeeDashboard;

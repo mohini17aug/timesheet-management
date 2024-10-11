@@ -126,4 +126,3 @@ const AttendanceReport = ({setSelectedDateRange}) => {
 };
 
 export default AttendanceReport;
-
