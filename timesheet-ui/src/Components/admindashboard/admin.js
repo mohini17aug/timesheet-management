@@ -25,7 +25,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { backendServerUrl } from "../../constants.ts";
+import { backendServerUrl } from "../utils/constants.ts";
 import './admin.css'
 
 const AdminDashboard = () => {

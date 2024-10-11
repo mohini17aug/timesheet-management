@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import './forgot.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { backendServerUrl } from "../../constants.ts";
+import { backendServerUrl } from "../utils/constants.ts";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
