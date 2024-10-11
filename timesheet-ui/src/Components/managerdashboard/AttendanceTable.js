@@ -6,11 +6,11 @@ const AttendanceTable = () => {
   const employees = [
     {
       name: 'Mohini',
-      projects: [{ name: 'Project 1', hours: [8, 8, 8, 8, 4] }, { name: 'Project 2', hours: [8, 8, 8, 8, 4] }],
+      projects: [{ name: 'Project 1', hours: [8, 8, 8, 8, 4, 0, 0] }, { name: 'Project 2', hours: [8, 8, 8, 8, 4, 0, 0] }],
     },
     {
       name: 'Shivani',
-      projects: [{ name: 'Time Off', hours: [8, 8, 8, 8, 0] }, { name: 'Project 2', hours: [8, 8, 8, 8, 8] }],
+      projects: [{ name: 'Time Off', hours: [8, 8, 8, 8, 0, 0, 0] }, { name: 'Project 2', hours: [8, 8, 8, 8, 8, 0, 0] }],
     },
   ];
 
