@@ -43,9 +43,12 @@ const Login = () =>{
               const role=response.data["role"];
               localStorage.setItem("role",role);
               localStorage.setItem("name",response.data["first_name"]);
-              if(role=="Employee" || role=="Manager"){
+              if(role=="Employee" ){
                 navigate("/dashboard");
               } 
+              else if(role=="Manager"){
+                navigate("/manager");
+              }
               else{
                 navigate("/admin");
               } 
