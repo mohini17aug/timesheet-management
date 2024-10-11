@@ -31,9 +31,9 @@ interface ProjectRow {
 
 const AttendanceTable = (props) => {
   const {selectedDateRange} = props;
-  const empId = 3;
+  const empId = localStorage.getItem("id");
   const dates = formatDateRange(selectedDateRange);
-  console.log(dates);
+  // console.log(dates);
   const [rows, setRows] = useState<ProjectRow[]>([
     {
       project: 0,
@@ -49,9 +49,10 @@ const AttendanceTable = (props) => {
   ]);
 
   const [projects, setProjects] = useState([]);
-  const [isEditable, setIsEditable] = useState(true);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isEditable,setIsEditable] = useState(true);
   const[isSubmitDisabled, setIsSubmitDisabled] =useState(true);
-
+  const[isApproved,setIsApproved] = useState(false);
 
   useEffect(() => {
     axios
@@ -69,22 +70,97 @@ const AttendanceTable = (props) => {
       });
   }, []);
 
+   // Function to fetch timesheet data
+   const fetchTimeSheetData = async () => {
+    const startDate = dates[0]; // Assuming dates is an array of formatted dates
+    const endDate = dates[dates.length - 1];
+    
+    try {
+      const response = await axios.get(`${backendServerUrl}timesheets/my_timesheets/?start_date=${startDate}&end_date=${endDate}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+        },
+      });
+      console.log("get response : "+response.data.timesheet);
+      return response.data.timesheet;
+    } catch (error) {
+      console.error("Error fetching timesheet data:", error);
+      return [];
+    }
+  };
+
+  // useEffect to fetch timesheet data and update rows
   useEffect(() => {
-    // Update the rows with new dates when the selectedDateRange changes
-   
-    setRows((prevRows) =>
-      prevRows.map((row) => ({
-        ...row,
-        mon: { date: dates[0], hours: row.mon.hours },
-        tue: { date: dates[1], hours: row.tue.hours },
-        wed: { date: dates[2], hours: row.wed.hours },
-        thu: { date: dates[3], hours: row.thu.hours },
-        fri: { date: dates[4], hours: row.fri.hours },
-        sat: { date: dates[5], hours: row.sat.hours },
-        sun: { date: dates[6], hours: row.sun.hours },
-      }))
-    );
-  },[props.selectedDateRange]);
+    const updateRows = async () => {
+      const timesheetData = await fetchTimeSheetData();
+      if (timesheetData.length > 0) {
+        console.log(timesheetData[timesheetData.length-1]["approved"]);
+        
+        const lastEntry = timesheetData[timesheetData.length - 1];
+
+        setIsApproved(lastEntry.approved === true); 
+
+        const rowsByProject = timesheetData.reduce(
+          (acc: Record<string, ProjectRow>, entry) => {
+            const project = entry.project;
+
+            if (!acc[project]) {
+              acc[project] = {
+                project,
+                mon: { date: dates[0], hours: 0 },
+                tue: { date: dates[1], hours: 0 },
+                wed: { date: dates[2], hours: 0 },
+                thu: { date: dates[3], hours: 0 },
+                fri: { date: dates[4], hours: 0 },
+                sat: { date: dates[5], hours: 0 },
+                sun: { date: dates[6], hours: 0 },
+                total: 0,
+              };
+            }
+
+            const entryDate = new Date(entry.date);
+            const dayDiff = Math.floor(
+              (entryDate.getTime() - new Date(dates[0]).getTime()) /
+                (1000 * 60 * 60 * 24)
+            );
+
+            if (dayDiff >= 0 && dayDiff < 7) {
+              const dayOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][dayDiff];
+              acc[project][dayOfWeek].hours += entry.hours;
+              acc[project].total += entry.hours;
+            }
+
+            return acc;
+          },
+          {} as Record<string, ProjectRow>
+        );
+
+        const formattedRows = Object.values(rowsByProject) as ProjectRow[];
+        // Sort rows by project ID
+        formattedRows.sort((a, b) => a.project - b.project);
+        setIsSubmitted(true);
+        setRows(formattedRows);
+      }
+  else{
+    setIsSubmitted(false);
+    const newRows = {
+      project:0,
+      mon: { date: dates[0], hours: 0 },
+      tue: { date: dates[1], hours: 0 },
+      wed: { date: dates[2], hours: 0 },
+      thu: { date: dates[3], hours: 0 },
+      fri: { date: dates[4], hours: 0 },
+      sat: { date: dates[5], hours: 0 },
+      sun: { date: dates[6], hours: 0 },
+      total: 0,
+    };
+    setRows([newRows]);
+  }
+};
+
+    updateRows();
+  }, [selectedDateRange]); // Trigger this effect when selectedDateRange changes
+
 
   const fetchProjectIdByName = async (projectName: string) => {
     try {
@@ -192,6 +268,10 @@ const AttendanceTable = (props) => {
   };
 
   const handleSubmit = () => {
+    if(totalHoursForWeek < 40){
+      alert("fill for 40 hours");
+    }
+    else{
     const timesheet = rows.flatMap((row) => {
       return [
         {
@@ -243,8 +323,13 @@ const AttendanceTable = (props) => {
           Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
         },
       })
-      .then(() => {})
+      .then((response) => {
+        alert("Data submitted successfully !!");
+        setIsSubmitted(true);
+        setIsEditable(false);
+      })
       .catch(() => {});
+    }
   };
 
   return (
@@ -279,6 +364,7 @@ const AttendanceTable = (props) => {
                     onChange={(e) =>
                       handleInputChange(index, "project", e.target.value as string)
                     }
+                    disabled={isSubmitted}
                   >
                     {projects.map((project) => (
                       <MenuItem key={project.id} value={project.id}>
@@ -300,6 +386,7 @@ const AttendanceTable = (props) => {
                             e.target.value
                           )
                         }
+                        disabled={isSubmitted} //Disable on submit
                       />
                     </TableCell>
                   )
@@ -326,6 +413,7 @@ const AttendanceTable = (props) => {
                   color="secondary"
                   style={{ margin: "25px" }}
                   onClick={() => handleRemoveRow(index)}
+                  disabled={isSubmitted}
                 >
                   Remove
                 </Button>
@@ -345,7 +433,7 @@ const AttendanceTable = (props) => {
           </TableBody>
         </Table>
         <Button onClick={handleAddRow} 
-        variant="contained" color="primary" disabled={rows.length >=projects.length}>
+        variant="contained" color="primary" disabled={rows.length >=projects.length || isSubmitted}>
           Add Row
         </Button>
         <div>Total Hours for the Week: {totalHoursForWeek}</div>
@@ -360,10 +448,23 @@ const AttendanceTable = (props) => {
           cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
         }}
         onClick={handleSubmit}
-        disabled={isSubmitDisabled}
+        disabled={isSubmitDisabled || isSubmitted}
       >
         Submit
       </Button>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+      {rows.length > 0  && isSubmitted && (
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: isApproved ? "green" : "orange",
+              color: "white",
+            }}
+            disabled={isSubmitDisabled}
+          >
+            {isApproved ? "Approved" : "Pending"}
+          </Button>
+        )}</div>
     </>
   );
 };

@@ -40,9 +40,11 @@ const Login = () =>{
             },
           }).then(response =>{
             if(response.status==200){
+              console.log(response.data);
               const role=response.data["role"];
               localStorage.setItem("role",role);
               localStorage.setItem("name",response.data["first_name"]);
+              localStorage.setItem("id",response.data["id"]);
               if(role=="Employee" || role=="Manager"){
                 navigate("/dashboard");
               } 
