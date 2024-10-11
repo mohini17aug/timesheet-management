@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../common/SideBar';
-import Header from './Header';
-import AttendanceReport from "../common/AttendanceReport.js";
+import  AttendanceReport  from "../common/AttendanceReport.js";
+import TopNav from '../common/TopNav.js'
 import AttendanceTable from './AttendanceTable';
 import { Box } from '@mui/material';
 
@@ -16,8 +16,8 @@ function ManagerDashboard() {
     <Box sx={{ display: 'flex', marginLeft: '120px' }}>
       <Sidebar />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Header />
-        <AttendanceReport selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange}/>
+        <TopNav />
+        <AttendanceReport selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange} />
         <AttendanceTable />
       </Box>
     </Box>

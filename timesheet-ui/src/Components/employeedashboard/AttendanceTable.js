@@ -14,27 +14,15 @@ import {
 } from "@mui/material";
 import Remove from "@mui/icons-material/Remove";
 import axios from "axios";
-import { backendServerUrl } from "../../constants.ts";
+import { backendServerUrl } from "../utils/constants.ts";
 import { formatDateRange } from "../../utils.ts";
-
-interface ProjectRow {
-  project: number;
-  mon: { date: string; hours: number };
-  tue: { date: string; hours: number };
-  wed: { date: string; hours: number };
-  thu: { date: string; hours: number };
-  fri: { date: string; hours: number };
-  sat: { date: string; hours: number };
-  sun: { date: string; hours: number };
-  total: number;
-}
 
 const AttendanceTable = (props) => {
   const {selectedDateRange} = props;
   const empId = localStorage.getItem("id");
   const dates = formatDateRange(selectedDateRange);
   // console.log(dates);
-  const [rows, setRows] = useState<ProjectRow[]>([
+  const [rows, setRows] = useState([
     {
       project: 0,
       mon: { date: dates[0], hours: 0 },
@@ -101,7 +89,7 @@ const AttendanceTable = (props) => {
         setIsApproved(lastEntry.approved === true); 
 
         const rowsByProject = timesheetData.reduce(
-          (acc: Record<string, ProjectRow>, entry) => {
+          (acc, entry) => {
             const project = entry.project;
 
             if (!acc[project]) {
@@ -132,10 +120,10 @@ const AttendanceTable = (props) => {
 
             return acc;
           },
-          {} as Record<string, ProjectRow>
+          {} 
         );
 
-        const formattedRows = Object.values(rowsByProject) as ProjectRow[];
+        const formattedRows = Object.values(rowsByProject);
         // Sort rows by project ID
         formattedRows.sort((a, b) => a.project - b.project);
         setIsSubmitted(true);
@@ -162,7 +150,7 @@ const AttendanceTable = (props) => {
   }, [selectedDateRange]); // Trigger this effect when selectedDateRange changes
 
 
-  const fetchProjectIdByName = async (projectName: string) => {
+  const fetchProjectIdByName = async (projectName) => {
     try {
       const response = await axios.get(
         `${backendServerUrl}projects/get-id-by-name/?name=${projectName}`, {
@@ -216,9 +204,9 @@ const AttendanceTable = (props) => {
   const totalHoursForWeek = calculateTotalHoursForWeek();
 
   const handleInputChange = (
-    index: number,
-    field: keyof ProjectRow,
-    value: string
+    index,
+    field,
+    value
   ) => {
     const newRows = [...rows];
   
@@ -230,7 +218,7 @@ const AttendanceTable = (props) => {
     }
   
     if (field !== "project" && Number(value) < 9) {
-      const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as (keyof ProjectRow)[];
+      const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
       const total = days.reduce((sum, day) => {
         return sum + (parseFloat(newRows[index][day].hours) || 0);
       }, 0);
@@ -263,7 +251,7 @@ const AttendanceTable = (props) => {
     ]);
   };
 
-  const handleRemoveRow = (index: number) => {
+  const handleRemoveRow = (index) => {
     setRows((prevRows) => prevRows.filter((_, i) => i !== index));
   };
 
@@ -362,7 +350,7 @@ const AttendanceTable = (props) => {
                 <Select
                     value={row.project}
                     onChange={(e) =>
-                      handleInputChange(index, "project", e.target.value as string)
+                      handleInputChange(index, "project", e.target.value)
                     }
                     disabled={isSubmitted}
                   >
@@ -378,11 +366,11 @@ const AttendanceTable = (props) => {
                     <TableCell key={day}>
                       <TextField
                         type="text"
-                        value={row[day as keyof ProjectRow].hours}
+                        value={row[day].hours}
                         onChange={(e) =>
                           handleInputChange(
                             index,
-                            day as keyof ProjectRow,
+                            day ,
                             e.target.value
                           )
                         }
@@ -428,7 +416,7 @@ const AttendanceTable = (props) => {
               <TableCell>{dailyTotals.fri > 8 ? 'Exceeds 8' : dailyTotals.fri}</TableCell>
               <TableCell>{dailyTotals.sat > 8 ? 'Exceeds 8' : dailyTotals.sat}</TableCell>
               <TableCell>{dailyTotals.sun > 8 ? 'Exceeds 8' : dailyTotals.sun}</TableCell>
-              <TableCell></TableCell>
+              <TableCell>{totalHoursForWeek}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -436,7 +424,7 @@ const AttendanceTable = (props) => {
         variant="contained" color="primary" disabled={rows.length >=projects.length || isSubmitted}>
           Add Row
         </Button>
-        <div>Total Hours for the Week: {totalHoursForWeek}</div>
+        <div>Maximum Allowed Hours for the week: 40</div>
       </TableContainer>
       <Button
         variant="contained"

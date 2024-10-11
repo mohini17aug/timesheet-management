@@ -5,7 +5,7 @@ const ApproveRejectButton = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       <Button variant="contained" color="success">Approve</Button>
-      <Button variant="contained" color="error">Reject</Button>
+      {/* <Button variant="contained" color="error">Reject</Button> */}
     </Box>
   );
 };

@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
       <Box>
-        <Typography variant="h5">Good Morning, {localStorage.getItem("name")}!</Typography>
+        <Typography variant="h5">Hello, {localStorage.getItem("name")}!</Typography>
         <Typography variant="subtitle1" color="error">You have 7 requests pending</Typography>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Container } from "@mui/material";
 import Sidebar from "../common/SideBar.js";
-import TopNav from "./TopNov.js";
+import TopNav from "../common/TopNav.js";
 import AttendanceReport from "../common/AttendanceReport.js";
-import AttendanceTable from "./AttendanceTable.tsx";
+import AttendanceTable from "./AttendanceTable.js";
 
 const EmployeeDashboard = () => {
   const [selectedDateRange, setSelectedDateRange] = useState(

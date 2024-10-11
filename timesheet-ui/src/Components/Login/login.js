@@ -1,58 +1,56 @@
-import {React,useState} from "react";
+import { React, useState } from "react";
 import './login.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { Link , useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { backendServerUrl } from "../../constants.ts";
+import { backendServerUrl } from "../utils/constants.ts";
 
-const Login = () =>{
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) =>{
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log("user login");
-    console.log(email+"---"+password+"---");
+    console.log(email + "---" + password + "---");
     axios.post(`${backendServerUrl}token/`, {
-        email: email,
-        password: password,
+      email: email,
+      password: password,
     }, {
-        headers: {
-            'Content-Type': 'application/json',
-        }
+      headers: {
+        'Content-Type': 'application/json',
+      }
     })
-    .then(response => {
+      .then(response => {
         console.log(response);
         // Response was successful, now checking for specific status codes
         if (response.status === 200) {
           console.log('Success:', response.data["access"]);
-          localStorage.setItem("accesstoken",response.data["access"]);
-          localStorage.setItem("refreshtoken",response.data["refresh"]);
+          localStorage.setItem("accesstoken", response.data["access"]);
+          localStorage.setItem("refreshtoken", response.data["refresh"]);
           console.log(email);
           console.log(localStorage.getItem("accesstoken"));
-          axios.get(`${backendServerUrl}employees/?email=${email}`,{
+          axios.get(`${backendServerUrl}employees/?email=${email}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
             },
-          }).then(response =>{
-            if(response.status==200){
-              console.log(response.data);
-              const role=response.data["role"];
-              localStorage.setItem("role",role);
-              localStorage.setItem("name",response.data["first_name"]);
-              localStorage.setItem("id",response.data["id"]);
-              if(role=="Employee" || role=="Manager"){
+          }).then(response => {
+            if (response.status === 200) {
+              const role = response.data["role"];
+              localStorage.setItem("role", role);
+              localStorage.setItem("name", response.data["first_name"]);
+              if (role === "Employee") {
                 navigate("/dashboard");
               }
-              else{
+              else {
                 navigate("/admin");
-              } 
+              }
             }
           });
-         
+
         } else if (response.status === 201) {
           console.log('Resource created:', response.data);
         }
@@ -60,14 +58,14 @@ const Login = () =>{
       .catch(error => {
         if (error.response) {
           // Error response received from the server
-          
+
           if (error.response.status === 400) {
             // Handle bad request
             console.log('Bad request:', error.response.data);
           } else if (error.response.status === 401) {
             // Handle unauthorized
             console.log('Unauthorized:', error.response.data["detail"]);
-            setError(error.response+" "+error.response.data["detail"]);
+            setError(error.response + " " + error.response.data["detail"]);
           } else if (error.response.status === 404) {
             // Handle not found
             console.log('Not found:', error.response.data);
@@ -79,31 +77,31 @@ const Login = () =>{
           // Something happened in setting up the request
           console.log('Error', error.message);
         }
-    });
-    };
+      });
+  };
 
-    return(
-        <div className="login">
-        <div className="loginform">
-            <form onSubmit={handleSubmit}>
-                <h1>Login to your Account</h1>
-                <div className="input-box">
-                    <input type="email" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)}required/>
-                    <FontAwesomeIcon icon={faUser} className="icon" />
-                </div>
-                <div className="input-box">
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-                    <FontAwesomeIcon icon={faLock} className="icon" />
-                </div>
-                {error && <div style={{ color: 'red' }}>{error}</div>}
-                <button type="submit">Login</button>
-                <div className="forgot1">
-                    <Link to="/forgot">Forgot password?</Link> 
-                </div>
-            </form>
+  return (
+    <div className="login">
+      <div className="loginform">
+        <form onSubmit={handleSubmit}>
+          <h1>Login to your Account</h1>
+          <div className="input-box">
+            <input type="email" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <FontAwesomeIcon icon={faUser} className="icon" />
           </div>
-        </div>
-    );
+          <div className="input-box">
+            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <FontAwesomeIcon icon={faLock} className="icon" />
+          </div>
+          {error && <div style={{ color: 'red' }}>{error}</div>}
+          <button type="submit">Login</button>
+          <div className="forgot1">
+            <Link to="/forgot">Forgot password?</Link>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default Login;
