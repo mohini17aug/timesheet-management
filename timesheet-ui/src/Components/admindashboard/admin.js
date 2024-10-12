@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 import { backendServerUrl } from "../utils/constants.ts";
 import './admin.css'
+import Sidebar from "../common/SideBar.js";
 
 const AdminDashboard = () => {
   const [selectedOption, setSelectedOption] = useState("Projects");
@@ -461,7 +462,8 @@ const AdminDashboard = () => {
 
   
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex" , paddingLeft: '150px'}}>
+      <Sidebar />
       {/* Left Pane */}
       <div className="left-pane">
         <List component="nav">

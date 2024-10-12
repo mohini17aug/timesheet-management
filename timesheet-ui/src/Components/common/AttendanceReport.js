@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { formatToCustomDate } from "../../utils.ts";
+import { formatToCustomDate } from "../utils/utils.ts";
 
 const getWeekStartAndEnd = (offset) => {
   const today = new Date();

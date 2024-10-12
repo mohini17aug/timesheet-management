@@ -15,19 +15,6 @@ const Sidebar = () => {
         <ListItem>
           <b style={{ color: "aliceblue" }}>TIMESHEET APP</b>
         </ListItem>
-        <ListItem button onClick={() => { navigate('/admin') }}>
-          <ListItemIcon
-            style={{
-              height: "50px",
-              alignItems: "center",
-              margin: "auto",
-              color: "aliceblue",
-            }}
-          >
-            <DashboardIcon />
-            Admin
-          </ListItemIcon>
-        </ListItem>
         <ListItem button onClick={() => { navigate('/dashboard') }}>
           <ListItemIcon
             style={{
@@ -52,6 +39,19 @@ const Sidebar = () => {
           >
             <PersonIcon />
             Manager
+          </ListItemIcon>
+        </ListItem>
+        <ListItem button onClick={() => { navigate('/admin') }}>
+          <ListItemIcon
+            style={{
+              height: "50px",
+              alignItems: "center",
+              margin: "auto",
+              color: "aliceblue",
+            }}
+          >
+            <DashboardIcon />
+            Admin
           </ListItemIcon>
         </ListItem>
       </List>

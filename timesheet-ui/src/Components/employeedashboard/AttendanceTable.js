@@ -15,10 +15,10 @@ import {
 import Remove from "@mui/icons-material/Remove";
 import axios from "axios";
 import { backendServerUrl } from "../utils/constants.ts";
-import { formatDateRange } from "../../utils.ts";
+import { formatDateRange } from "../utils/utils.ts";
 
 const AttendanceTable = (props) => {
-  const {selectedDateRange} = props;
+  const { selectedDateRange } = props;
   const empId = localStorage.getItem("id");
   const dates = formatDateRange(selectedDateRange);
   // console.log(dates);
@@ -38,10 +38,10 @@ const AttendanceTable = (props) => {
 
   const [projects, setProjects] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isEditable,setIsEditable] = useState(true);
-  const[isSubmitDisabled, setIsSubmitDisabled] =useState(true);
-  const[isApproved,setIsApproved] = useState(false);
-  const[isSetTime,setIsSetTime]=useState(false);
+  const [isEditable, setIsEditable] = useState(true);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isSetTime, setIsSetTime] = useState(false);
 
   useEffect(() => {
     axios
@@ -51,7 +51,7 @@ const AttendanceTable = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data); 
+        console.log(response.data);
         setProjects(response.data);
       })
       .catch((error) => {
@@ -59,18 +59,18 @@ const AttendanceTable = (props) => {
       });
   }, []);
 
-   // Function to fetch timesheet data
-   const fetchTimeSheetData = async () => {
+  // Function to fetch timesheet data
+  const fetchTimeSheetData = async () => {
     const startDate = dates[0]; // Assuming dates is an array of formatted dates
     const endDate = dates[dates.length - 1];
-    
+
     try {
-      const response = await axios.get(`${backendServerUrl}timesheets/my_timesheets/?start_date=${startDate}&end_date=${endDate}`,{
+      const response = await axios.get(`${backendServerUrl}timesheets/my_timesheets/?start_date=${startDate}&end_date=${endDate}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
         },
       });
-      console.log("get response : "+response.data.timesheet);
+      console.log("get response : " + response.data.timesheet);
       return response.data.timesheet;
     } catch (error) {
       console.error("Error fetching timesheet data:", error);
@@ -85,16 +85,17 @@ const AttendanceTable = (props) => {
       setIsSetTime(true);
       if (timesheetData.length > 0) {
         console.log(timesheetData[0].status);
-        
+
         const status = timesheetData[0].status;
 
-        if(status==="Approved"){
-        setIsApproved(true); }
-        if(status==="Rejected"){
+        if (status === "Approved") {
+          setIsApproved(true);
+        }
+        if (status === "Rejected") {
           setIsApproved(false);
           setIsSubmitted(false);
         }
-        if(status==="Submitted"){
+        if (status === "Submitted") {
           setIsSubmitted(true);
           setIsApproved(false);
         }
@@ -120,7 +121,7 @@ const AttendanceTable = (props) => {
             const entryDate = new Date(entry.date);
             const dayDiff = Math.floor(
               (entryDate.getTime() - new Date(dates[0]).getTime()) /
-                (1000 * 60 * 60 * 24)
+              (1000 * 60 * 60 * 24)
             );
 
             if (dayDiff >= 0 && dayDiff < 7) {
@@ -131,7 +132,7 @@ const AttendanceTable = (props) => {
 
             return acc;
           },
-          {} 
+          {}
         );
 
         const formattedRows = Object.values(rowsByProject);
@@ -140,23 +141,23 @@ const AttendanceTable = (props) => {
         setIsSubmitted(true);
         setRows(formattedRows);
       }
-  else{
-    setIsSubmitted(false);
-    setIsSetTime(false);
-    const newRows = {
-      project:0,
-      mon: { date: dates[0], hours: 0 },
-      tue: { date: dates[1], hours: 0 },
-      wed: { date: dates[2], hours: 0 },
-      thu: { date: dates[3], hours: 0 },
-      fri: { date: dates[4], hours: 0 },
-      sat: { date: dates[5], hours: 0 },
-      sun: { date: dates[6], hours: 0 },
-      total: 0,
+      else {
+        setIsSubmitted(false);
+        setIsSetTime(false);
+        const newRows = {
+          project: 0,
+          mon: { date: dates[0], hours: 0 },
+          tue: { date: dates[1], hours: 0 },
+          wed: { date: dates[2], hours: 0 },
+          thu: { date: dates[3], hours: 0 },
+          fri: { date: dates[4], hours: 0 },
+          sat: { date: dates[5], hours: 0 },
+          sun: { date: dates[6], hours: 0 },
+          total: 0,
+        };
+        setRows([newRows]);
+      }
     };
-    setRows([newRows]);
-  }
-};
 
     updateRows();
   }, [selectedDateRange]); // Trigger this effect when selectedDateRange changes
@@ -166,10 +167,10 @@ const AttendanceTable = (props) => {
     try {
       const response = await axios.get(
         `${backendServerUrl}projects/get-id-by-name/?name=${projectName}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
-          },
-        }
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+        },
+      }
       );
       return response.data.id;
     } catch (error) {
@@ -221,29 +222,29 @@ const AttendanceTable = (props) => {
     value
   ) => {
     const newRows = [...rows];
-  
+
     if (field === "project") {
       newRows[index][field] = Number(value); // Directly assign the project ID
     } else if (value === "" || /^[0-8]*$/.test(value)) {
       const hourValue = Math.max(0, Math.min(Number(value), 8)); // Restrict to 0-8 hours
       newRows[index][field].hours = hourValue;
     }
-  
+
     if (field !== "project" && Number(value) < 9) {
       const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
       const total = days.reduce((sum, day) => {
         return sum + (parseFloat(newRows[index][day].hours) || 0);
       }, 0);
 
-      if(total>40){
+      if (total > 40) {
         alert("Total hours for week cannot exceed 40");
       }
       newRows[index].total = total;
     }
 
-  
+
     setRows(newRows);
-    
+
   };
 
   const handleAddRow = () => {
@@ -263,80 +264,79 @@ const AttendanceTable = (props) => {
     ]);
   };
 
-  const handleRemoveRow = (index) => {
+  const handleRemoveRow = (index) =>
     setRows((prevRows) => prevRows.filter((_, i) => i !== index));
-  };
 
   const handleSubmit = () => {
-    if(totalHoursForWeek < 40){
+    if (totalHoursForWeek < 40) {
       alert("fill for 40 hours");
     }
-    else{
+    else {
       setIsSetTime(true);
-    const timesheet = rows.flatMap((row) => {
-      return [
-        {
-          project: row.project,
-          date: row.mon.date,
-          hours: Number(row.mon.hours),
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.tue.date,
-          hours: Number(row.tue.hours),
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.wed.date,
-          hours: Number(row.wed.hours),
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.thu.date,
-          hours: Number(row.thu.hours),
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.fri.date,
-          hours: Number(row.fri.hours),
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.sat.date,
-          hours: 0,
-          status: "Submitted"
-        },
-        {
-          project: row.project,
-          date: row.sun.date,
-          hours: 0,
-          status: "Submitted"
-        },
-      ];
-    });
+      const timesheet = rows.flatMap((row) => {
+        return [
+          {
+            project: row.project,
+            date: row.mon.date,
+            hours: Number(row.mon.hours),
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.tue.date,
+            hours: Number(row.tue.hours),
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.wed.date,
+            hours: Number(row.wed.hours),
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.thu.date,
+            hours: Number(row.thu.hours),
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.fri.date,
+            hours: Number(row.fri.hours),
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.sat.date,
+            hours: 0,
+            status: "Submitted"
+          },
+          {
+            project: row.project,
+            date: row.sun.date,
+            hours: 0,
+            status: "Submitted"
+          },
+        ];
+      });
 
-    const timesheetData = { employee: empId, timesheet };
+      const timesheetData = { employee: empId, timesheet };
 
-    console.log(timesheetData);
+      console.log(timesheetData);
 
-    axios
-      .post(`${backendServerUrl}timesheets/`, timesheetData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
-        },
-      })
-      .then((response) => {
-        alert("Data submitted successfully !!");
-        setIsSubmitted(true);
-        setIsEditable(false);
-      })
-      .catch(() => {});
+      axios
+        .post(`${backendServerUrl}timesheets/`, timesheetData, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
+          },
+        })
+        .then((response) => {
+          alert("Data submitted successfully !!");
+          setIsSubmitted(true);
+          setIsEditable(false);
+        })
+        .catch(() => { });
     }
   };
 
@@ -367,7 +367,7 @@ const AttendanceTable = (props) => {
                   </TableCell>
                 )}
                 <TableCell>
-                <Select
+                  <Select
                     value={row.project}
                     onChange={(e) =>
                       handleInputChange(index, "project", e.target.value)
@@ -390,7 +390,7 @@ const AttendanceTable = (props) => {
                         onChange={(e) =>
                           handleInputChange(
                             index,
-                            day ,
+                            day,
                             e.target.value
                           )
                         }
@@ -412,7 +412,7 @@ const AttendanceTable = (props) => {
                     value={row.sun.hours}
                     disabled
                   />
-                  </TableCell>
+                </TableCell>
                 <TableCell>{row.total}</TableCell>
                 <Button
                   size="small"
@@ -422,12 +422,13 @@ const AttendanceTable = (props) => {
                   style={{ margin: "25px" }}
                   onClick={() => handleRemoveRow(index)}
                   disabled={isSubmitted}
+                  hidden={index === 0}
                 >
                   Remove
                 </Button>
               </TableRow>
             ))}
-             <TableRow>
+            <TableRow>
               <TableCell colSpan={1}>Daily Total</TableCell>
               <TableCell>{dailyTotals.mon > 8 ? 'Exceeds 8' : dailyTotals.mon}</TableCell>
               <TableCell>{dailyTotals.tue > 8 ? 'Exceeds 8' : dailyTotals.tue}</TableCell>
@@ -440,8 +441,8 @@ const AttendanceTable = (props) => {
             </TableRow>
           </TableBody>
         </Table>
-        <Button onClick={handleAddRow} 
-        variant="contained" color="primary" disabled={rows.length >=projects.length || isSubmitted}>
+        <Button onClick={handleAddRow}
+          variant="contained" color="primary" disabled={rows.length >= projects.length || isSubmitted}>
           Add Row
         </Button>
         <div>Maximum Allowed Hours for the week: 40</div>
@@ -461,27 +462,27 @@ const AttendanceTable = (props) => {
         Submit
       </Button>
       <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-      {rows.length > 0 && isSetTime &&(
-  <Button
-    variant="contained"
-    style={{
-      backgroundColor: isApproved
-        ? "green"
-        : isSubmitted
-        ? "orange"
-        : "red", // If both isApproved and isSubmitted are false, it's rejected
-      color: "white",
-    }}
-    disabled={isSubmitDisabled || (!isApproved && !isSubmitted)} // Disabled if rejected
-  >
-    {isApproved 
-      ? "Approved" 
-      : isSubmitted 
-      ? "Submitted" 
-      : "Rejected"}  {/* If neither is true, it's rejected */}
-  </Button>
-)}
-</div>
+        {rows.length > 0 && isSetTime && (
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: isApproved
+                ? "green"
+                : isSubmitted
+                  ? "orange"
+                  : "red", // If both isApproved and isSubmitted are false, it's rejected
+              color: "white",
+            }}
+            disabled={isSubmitDisabled || (!isApproved && !isSubmitted)} // Disabled if rejected
+          >
+            {isApproved
+              ? "Approved"
+              : isSubmitted
+                ? "Submitted"
+                : "Rejected"}  {/* If neither is true, it's rejected */}
+          </Button>
+        )}
+      </div>
     </>
   );
 };

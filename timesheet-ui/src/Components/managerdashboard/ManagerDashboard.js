@@ -18,7 +18,7 @@ function ManagerDashboard() {
       <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         <TopNav />
         <AttendanceReport selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange} />
-        <AttendanceTable />
+        <AttendanceTable selectedDateRange={selectedDateRange}  />
       </Box>
     </Box>
   );

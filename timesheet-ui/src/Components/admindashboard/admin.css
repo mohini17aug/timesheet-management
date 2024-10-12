@@ -1,6 +1,6 @@
 /* styles.css */
 .left-pane {
-    width: 200px;
+    width: 100px;
     border-right: 1px solid #ccc;
     padding: 10px;
     background-color: #f9f9f9; /* Light background for better contrast */

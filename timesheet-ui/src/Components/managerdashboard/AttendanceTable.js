@@ -3,19 +3,22 @@ import { Table, TableBody, TableCell, TableRow, TableContainer, TableHead, Paper
 import ApproveRejectButton from './ApproveRejectButton';
 import axios from "axios";
 import { backendServerUrl } from "../utils/constants.ts";
+import {formatDateRange} from '../utils/utils.ts'
 
-const AttendanceTable = () => {
+
+const AttendanceTable = (props) => {
 
   React.useEffect(() => {
+    const dates = formatDateRange(props.selectedDateRange);
     axios
-      .get(`${backendServerUrl}timesheet/employees/${localStorage.getItem('id')}/subordinates/`, {
+      .get(`${backendServerUrl}timesheets/${localStorage.getItem('id')}/subordinates_timesheets/?start_date=${dates[0]}&end_date=${dates.at(-1)}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accesstoken")}`,
         },
       })
       .then((response) => {console.log(response)})
       .catch((error) => console.error("Error fetching projects:", error));
-}, [])
+}, [props.selectedDateRange])
 
 const employees = [
   {
