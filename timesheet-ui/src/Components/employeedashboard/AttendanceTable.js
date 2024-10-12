@@ -41,6 +41,7 @@ const AttendanceTable = (props) => {
   const [isEditable,setIsEditable] = useState(true);
   const[isSubmitDisabled, setIsSubmitDisabled] =useState(true);
   const[isApproved,setIsApproved] = useState(false);
+  const[isSetTime,setIsSetTime]=useState(false);
 
   useEffect(() => {
     axios
@@ -81,12 +82,22 @@ const AttendanceTable = (props) => {
   useEffect(() => {
     const updateRows = async () => {
       const timesheetData = await fetchTimeSheetData();
+      setIsSetTime(true);
       if (timesheetData.length > 0) {
-        console.log(timesheetData[timesheetData.length-1]["approved"]);
+        console.log(timesheetData[0].status);
         
-        const lastEntry = timesheetData[timesheetData.length - 1];
+        const status = timesheetData[0].status;
 
-        setIsApproved(lastEntry.approved === true); 
+        if(status==="Approved"){
+        setIsApproved(true); }
+        if(status==="Rejected"){
+          setIsApproved(false);
+          setIsSubmitted(false);
+        }
+        if(status==="Submitted"){
+          setIsSubmitted(true);
+          setIsApproved(false);
+        }
 
         const rowsByProject = timesheetData.reduce(
           (acc, entry) => {
@@ -131,6 +142,7 @@ const AttendanceTable = (props) => {
       }
   else{
     setIsSubmitted(false);
+    setIsSetTime(false);
     const newRows = {
       project:0,
       mon: { date: dates[0], hours: 0 },
@@ -260,47 +272,55 @@ const AttendanceTable = (props) => {
       alert("fill for 40 hours");
     }
     else{
+      setIsSetTime(true);
     const timesheet = rows.flatMap((row) => {
       return [
         {
           project: row.project,
           date: row.mon.date,
           hours: Number(row.mon.hours),
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.tue.date,
           hours: Number(row.tue.hours),
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.wed.date,
           hours: Number(row.wed.hours),
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.thu.date,
           hours: Number(row.thu.hours),
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.fri.date,
           hours: Number(row.fri.hours),
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.sat.date,
           hours: 0,
+          status: "Submitted"
         },
         {
           project: row.project,
           date: row.sun.date,
           hours: 0,
+          status: "Submitted"
         },
       ];
     });
 
-    const timesheetData = { employee: empId, timesheet, approved: false };
+    const timesheetData = { employee: empId, timesheet };
 
     console.log(timesheetData);
 
@@ -441,18 +461,27 @@ const AttendanceTable = (props) => {
         Submit
       </Button>
       <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-      {rows.length > 0  && isSubmitted && (
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: isApproved ? "green" : "orange",
-              color: "white",
-            }}
-            disabled={isSubmitDisabled}
-          >
-            {isApproved ? "Approved" : "Pending"}
-          </Button>
-        )}</div>
+      {rows.length > 0 && isSetTime &&(
+  <Button
+    variant="contained"
+    style={{
+      backgroundColor: isApproved
+        ? "green"
+        : isSubmitted
+        ? "orange"
+        : "red", // If both isApproved and isSubmitted are false, it's rejected
+      color: "white",
+    }}
+    disabled={isSubmitDisabled || (!isApproved && !isSubmitted)} // Disabled if rejected
+  >
+    {isApproved 
+      ? "Approved" 
+      : isSubmitted 
+      ? "Submitted" 
+      : "Rejected"}  {/* If neither is true, it's rejected */}
+  </Button>
+)}
+</div>
     </>
   );
 };
