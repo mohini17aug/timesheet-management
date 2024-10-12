@@ -178,7 +178,7 @@ if not CORS_ALLOWED_ORIGINS or CORS_ALLOWED_ORIGINS == ['']:
     ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Set the access token expiry
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set the access token expiry
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Set the refresh token expiry
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

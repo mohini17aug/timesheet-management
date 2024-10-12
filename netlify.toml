@@ -1,0 +1,6 @@
+[build]
+  command = "cd timesheet-ui && npm install --legacy-peer-deps && npm run build"
+  publish = "timesheet-ui/build"
+
+[context.production]
+  install = "cd timesheet-ui && npm install --legacy-peer-deps"
