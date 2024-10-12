@@ -369,7 +369,7 @@ const AttendanceTable = (props) => {
                 )}
                 <TableCell>
                   <Select
-                    style={{width: '100px'}}
+                    style={{ width: '125px' }}
                     value={row.project}
                     onChange={(e) =>
                       handleInputChange(index, "project", e.target.value)
@@ -416,7 +416,7 @@ const AttendanceTable = (props) => {
                   />
                 </TableCell>
                 <TableCell>{row.total}</TableCell>
-                <Button
+                {rows.length > 1 && <Button
                   size="small"
                   startIcon={<Remove />}
                   variant="contained"
@@ -427,6 +427,7 @@ const AttendanceTable = (props) => {
                 >
                   Remove
                 </Button>
+                }
               </TableRow>
             ))}
             <TableRow>
@@ -442,16 +443,19 @@ const AttendanceTable = (props) => {
             </TableRow>
           </TableBody>
         </Table>
+        <span style={{margin: '5px'}}>
         <Button onClick={handleAddRow}
-          variant="contained" color="primary" disabled={rows.length >= projects.length || isSubmitted}>
+          variant="contained" color="primary" disabled={rows.length >= projects.length || isSubmitted} style={{padding: '5px'}}>
           Add Row
         </Button>
-        <div>Maximum Allowed Hours for the week: 40</div>
+        <span style={{float:'right', padding: '5px'}}>Maximum Allowed Hours for the week: 40</span>
+        </span>
       </TableContainer>
       <Button
         variant="contained"
         color={isSubmitDisabled ? "default" : "primary"} // Change color based on disabled state
         style={{
+          float:'right',
           marginTop: "20px",
           backgroundColor: isSubmitDisabled ? '#ccc' : undefined, // Custom background color for disabled state
           color: isSubmitDisabled ? '#666' : undefined, // Custom text color for disabled state
