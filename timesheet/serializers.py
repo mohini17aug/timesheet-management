@@ -44,10 +44,11 @@ class TimesheetEntryNestedSerializer(serializers.Serializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())  # Project ID
     date = serializers.DateField()
     hours = serializers.IntegerField()
+    status = serializers.CharField()
 
     class Meta:
        model = TimesheetEntry
-       fields = ['project', 'date', 'hours']
+       fields = ['project', 'date', 'hours', 'status']
 
 class TimesheetEntrySerializer(serializers.ModelSerializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
@@ -55,40 +56,37 @@ class TimesheetEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TimesheetEntry
-        fields = ['id', 'employee', 'project', 'date', 'hours', 'approved']
+        fields = ['id', 'employee', 'project', 'date', 'hours', 'status']
 
 class EmployeeTimesheetSerializer(serializers.ModelSerializer):
     timesheet = TimesheetEntryNestedSerializer(many=True, source='timesheets')  # Gets related timesheet entries
-    approved = serializers.SerializerMethodField()  # Method field to get approval status
+    #status = serializers.SerializerMethodField()  # Method field to get approval status
     #employee = serializers.IntegerField(source='id')  # Add the employee ID field
 
     class Meta:
         model = Employee
-        fields = ['id', 'first_name' ,   'last_name', 	'email'  , 'timesheet', 'approved']
+        fields = ['id', 'first_name' ,   'last_name', 	'email'  , 'timesheet']
     
     def get_timesheet(self, obj):
         # Use the filtered timesheets from the context
         timesheets = self.context.get('timesheets', TimesheetEntry.objects.none())
         return TimesheetEntryNestedSerializer(timesheets, many=True).data
 
-    def get_approved(self, obj):
-        # Assume timesheets are approved if all entries are approved
-        return all(entry.approved for entry in obj.timesheets.all())
-
+    
 
 class TimesheetEntryCreateSerializer(serializers.Serializer):
     employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
     timesheet = TimesheetEntryNestedSerializer(many=True)
-    approved = serializers.BooleanField(default=False)
+    #status = serializers.CharField()
 
     def create(self, validated_data):
         timesheet_data = validated_data.pop('timesheet')
         employee = validated_data.get('employee')
-        approved = validated_data.get('approved')
-
+       
         entries = []
         for entry in timesheet_data:
             project = entry['project'] 
+            status = entry.get('status', 'Submitted') 
             # Check if a timesheet entry for this employee and date already exists
             timesheet_entry = TimesheetEntry.objects.filter(employee=employee, project=project, date=entry['date']).first()
 
@@ -96,7 +94,7 @@ class TimesheetEntryCreateSerializer(serializers.Serializer):
                 # If entry exists, update the hours and approval status
                 timesheet_entry.hours = entry['hours']
                 timesheet_entry.project=entry['project']
-                timesheet_entry.approved = approved
+                timesheet_entry.status = status
                 timesheet_entry.save()
             else:
                 # Create a new timesheet entry if it does not exist
@@ -105,11 +103,11 @@ class TimesheetEntryCreateSerializer(serializers.Serializer):
                     project=entry['project'],
                     date=entry['date'],
                     hours=entry['hours'],
-                    approved=approved
+                    status=status
                 )
             entries.append(timesheet_entry)
 
-        return {"employee": employee, "timesheet": timesheet_data, "approved": approved}
+        return {"employee": employee, "timesheet": timesheet_data}
 
 class PasswordResetOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()

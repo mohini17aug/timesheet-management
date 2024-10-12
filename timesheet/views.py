@@ -90,14 +90,61 @@ class TimesheetEntryViewSet(viewsets.ModelViewSet):
             # Get all employees reporting to this manager
             subordinates = Employee.objects.filter(manager=manager)
 
-            # Serialize the data including timesheets for each subordinate
-            serializer = EmployeeTimesheetSerializer(subordinates, many=True)
-            return Response(serializer.data)
+            # Get the `start_date` and `end_date` query parameters
+            start_date_str = request.query_params.get('start_date')
+            end_date_str = request.query_params.get('end_date')
+
+            start_date = None
+            end_date = None
+
+            # Parse the date strings if provided
+            if start_date_str:
+                try:
+                    start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    return Response({"error": "Invalid start_date format. Use YYYY-MM-DD."}, status=400)
+            
+            if end_date_str:
+                try:
+                    end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    return Response({"error": "Invalid end_date format. Use YYYY-MM-DD."}, status=400)
+
+            # Retrieve timesheets for subordinates filtered by date range
+            timesheets = TimesheetEntry.objects.filter(employee__in=subordinates)
+
+            if start_date and end_date:
+                timesheets = timesheets.filter(date__range=[start_date, end_date])
+            elif start_date:
+                timesheets = timesheets.filter(date__gte=start_date)
+            elif end_date:
+                timesheets = timesheets.filter(date__lte=end_date)
+                
+                  # Group timesheets by employee
+            employee_timesheets = {}
+            for entry in timesheets:
+                if entry.employee.id not in employee_timesheets:
+                    employee_timesheets[entry.employee.id] = {
+                        "id": entry.employee.id,
+                        "first_name": entry.employee.first_name,
+                        "last_name": entry.employee.last_name,
+                        "email": entry.employee.email,
+                        "timesheet": []
+                    }
+                employee_timesheets[entry.employee.id]["timesheet"].append({
+                    "project": entry.project.id,
+                    "date": entry.date,
+                    "hours": entry.hours,
+                    "status": entry.status
+                })
+
+            # Return only employees who have timesheets in the given date range
+            return Response(list(employee_timesheets.values()), status=status.HTTP_200_OK)
+
         except Employee.DoesNotExist:
-            return Response({"error": "Manager not found"}, status=404)
+            return Response({"error": "Manager not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            # Catch any other exceptions and log them
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
      # Custom action for employees to see their own timesheets with an optional date range filter
     @action(detail=False, methods=['get'])
@@ -148,8 +195,7 @@ class TimesheetEntryViewSet(viewsets.ModelViewSet):
         serializer = TimesheetEntrySerializer(timesheets, many=True)
         return Response({
             'employee': employee.id,
-            'timesheet': serializer.data,
-            'approved': all(entry.approved for entry in timesheets)
+            'timesheet': serializer.data
         })
 
 

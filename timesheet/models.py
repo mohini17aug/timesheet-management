@@ -18,7 +18,6 @@ class Project(models.Model):
         return self.name
 
 class Employee(models.Model):
-
     ROLE_CHOICES = [
         ('Employee', 'Employee'),
         ('Admin', 'Admin'),
@@ -43,7 +42,7 @@ class TimesheetEntry(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE) 
     date = models.DateField()
     hours = models.IntegerField()
-    approved = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=[('Submitted', 'Submitted'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Submitted')
 
     class Meta:
         unique_together = ['employee', 'date', 'project']  # Ensures one entry per date
