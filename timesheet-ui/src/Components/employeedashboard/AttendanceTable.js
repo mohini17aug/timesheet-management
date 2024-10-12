@@ -37,7 +37,7 @@ const AttendanceTable = (props) => {
 
   const [projects, setProjects] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [_, setIsEditable] = useState(true);
+  const [isEditable, setIsEditable] = useState(true);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isApproved, setIsApproved] = useState(false);
   const [isSetTime, setIsSetTime] = useState(false);
@@ -50,7 +50,7 @@ const AttendanceTable = (props) => {
         },
       })
       .then((response) => {
-        console.log('Projects ', response.data);
+        console.log(response.data);
         setProjects(response.data);
       })
       .catch((error) => {
@@ -137,6 +137,7 @@ const AttendanceTable = (props) => {
         const formattedRows = Object.values(rowsByProject);
         // Sort rows by project ID
         formattedRows.sort((a, b) => a.project - b.project);
+        // setIsSubmitted(true);
         setRows(formattedRows);
       }
       else {
@@ -344,16 +345,16 @@ const AttendanceTable = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell style={{ fontWeight: 'bold' }} >Emp Name</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Project</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Mon</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Tue</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Wed</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Thu</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Fri</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Sat</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Sun</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>Total</TableCell>
+              <TableCell style={{fontWeight:'bold'}} >Emp Name</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Project</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Mon</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Tue</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Wed</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Thu</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Fri</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Sat</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Sun</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
