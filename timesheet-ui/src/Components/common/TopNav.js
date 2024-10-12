@@ -4,9 +4,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import {useNavigate } from "react-router-dom";
 
 const TopNav = () => {
+  
  const navigate=useNavigate();
-  const handleLogout = async () => {
 
+  const handleLogout = async () => {
     // Clear local storage or session storage
     localStorage.removeItem('accesstoken');
     localStorage.removeItem('refreshtoken'); // Clear name if stored
