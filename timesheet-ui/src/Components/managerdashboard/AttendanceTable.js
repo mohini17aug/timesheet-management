@@ -86,7 +86,7 @@ const AttendanceTable = (props) => {
       // Organize hours by project dynamically based on the earliest date
       employee.timesheet.forEach(entry => {
         if (!projects[entry.project]) {
-          projects[entry.project] = []; // Start an empty array for each project
+          projects[entry.project] = [0,0,0,0,0,0,0]; // Start an empty array for each project
         }
 
         const entryDate = new Date(entry.date);
