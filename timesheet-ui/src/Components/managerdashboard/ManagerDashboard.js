@@ -13,9 +13,9 @@ function ManagerDashboard() {
 
 
   return (
-    <Box sx={{ display: 'flex', marginLeft: '120px' }}>
+    <Box sx={{ display: 'flex', marginLeft: '150px'}}>
       <Sidebar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         <TopNav />
         <AttendanceReport selectedDateRange={selectedDateRange} setSelectedDateRange={setSelectedDateRange} />
         <AttendanceTable />

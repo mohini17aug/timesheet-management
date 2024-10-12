@@ -1,19 +1,21 @@
 import React from "react";
 import { Drawer, List, ListItem, ListItemIcon } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import FolderIcon from "@mui/icons-material/Folder";
 import GroupIcon from "@mui/icons-material/Group";
-import TableChartIcon from "@mui/icons-material/TableChart";
 import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+
+  const navigate = useNavigate();
+
   return (
     <Drawer variant="permanent">
       <List style={{ backgroundColor: "#494FBF", height: "100%" }}>
         <ListItem>
-          <b style={{ color: "aliceblue" }}>LOGO</b>
+          <b style={{ color: "aliceblue" }}>TIMESHEET APP</b>
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => { navigate('/admin') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -23,21 +25,10 @@ const Sidebar = () => {
             }}
           >
             <DashboardIcon />
+            Admin
           </ListItemIcon>
         </ListItem>
-        <ListItem button>
-          <ListItemIcon
-            style={{
-              height: "50px",
-              alignItems: "center",
-              margin: "auto",
-              color: "aliceblue",
-            }}
-          >
-            <FolderIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => { navigate('/dashboard') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -47,21 +38,10 @@ const Sidebar = () => {
             }}
           >
             <GroupIcon />
+            Employees
           </ListItemIcon>
         </ListItem>
-        <ListItem button>
-          <ListItemIcon
-            style={{
-              height: "50px",
-              alignItems: "center",
-              margin: "auto",
-              color: "aliceblue",
-            }}
-          >
-            <TableChartIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => { navigate('/manager') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -71,6 +51,7 @@ const Sidebar = () => {
             }}
           >
             <PersonIcon />
+            Manager
           </ListItemIcon>
         </ListItem>
       </List>

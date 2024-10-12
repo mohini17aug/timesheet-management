@@ -13,7 +13,7 @@ const EmployeeDashboard = () => {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flexGrow: 1 }}>
+      <div style={{ flexGrow: 1, paddingLeft: '120px' }}>
         <TopNav />
         <Container>
           <AttendanceReport
