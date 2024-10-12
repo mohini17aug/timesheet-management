@@ -1,10 +1,10 @@
 import './App.css';
-import Login from './Components/login/login';
-import ForgotPassword from './Components/forgotpassword/Forgot.js';
+import Login from './Components/Login/login';
+import ForgotPassword from './Components/forgotpassword/forgot.js';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
-import UpdatePassword from './Components/forgotpassword/UpdatePassword';
+import UpdatePassword from './Components/forgotpassword/updatepassword';
 import EmployeeDashboard from './Components/employeedashboard/Dashboard';
-import AdminDashboard from './Components/admindashboard/Admin';
+import AdminDashboard from './Components/admindashboard/admin';
 import ManagerDashboard from './Components/managerdashboard/ManagerDashboard';
 
 

@@ -1,8 +1,21 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, InputBase, Avatar } from "@mui/material";
+import { AppBar, Toolbar, Typography, InputBase, Avatar,Button} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import {useNavigate } from "react-router-dom";
 
 const TopNav = () => {
+ const navigate=useNavigate();
+  const handleLogout = async () => {
+
+    // Clear local storage or session storage
+    localStorage.removeItem('accesstoken');
+    localStorage.removeItem('refreshtoken'); // Clear name if stored
+    localStorage.removeItem('name');
+    localStorage.removeItem('id');
+    // Redirect to login page
+    navigate("/");
+  };
+
   return (
     <AppBar
       position="static"
@@ -22,6 +35,14 @@ const TopNav = () => {
             Role: Developer
           </Typography>
           <Avatar alt="Profile" src="/profile-pic.jpg" />
+          <Button 
+            color="primary" 
+            variant="contained" 
+            style={{ marginLeft: "15px" }} 
+            onClick={handleLogout} // Call the logout function
+          >
+            Logout
+          </Button>
         </div>
       </Toolbar>
     </AppBar>

@@ -10,12 +10,14 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("user login");
     console.log(email + "---" + password + "---");
+    setLoading(true);
     axios.post(`${backendServerUrl}token/`, {
       email: email,
       password: password,
@@ -42,6 +44,7 @@ const Login = () => {
               const role = response.data["role"];
               localStorage.setItem("role", role);
               localStorage.setItem("name", response.data["first_name"]);
+              localStorage.setItem("id",response.data["id"]);
               if (role === "Employee") {
                 navigate("/dashboard");
               }
@@ -77,6 +80,9 @@ const Login = () => {
           // Something happened in setting up the request
           console.log('Error', error.message);
         }
+      })
+      .finally(()=>{
+        setLoading(true);
       });
   };
 
@@ -94,11 +100,12 @@ const Login = () => {
             <FontAwesomeIcon icon={faLock} className="icon" />
           </div>
           {error && <div style={{ color: 'red' }}>{error}</div>}
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
           <div className="forgot1">
             <Link to="/forgot">Forgot password?</Link>
           </div>
         </form>
+        {loading && <div>Loading...</div>} 
       </div>
     </div>
   );
