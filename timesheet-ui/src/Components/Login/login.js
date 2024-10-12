@@ -48,6 +48,9 @@ const Login = () => {
               if (role === "Employee") {
                 navigate("/dashboard");
               }
+              else if (role ==="Manager"){
+                navigate("/manager");
+              }
               else {
                 navigate("/admin");
               }
@@ -68,7 +71,7 @@ const Login = () => {
           } else if (error.response.status === 401) {
             // Handle unauthorized
             console.log('Unauthorized:', error.response.data["detail"]);
-            setError(error.response + " " + error.response.data["detail"]);
+            setError(error.response.data["detail"]);
           } else if (error.response.status === 404) {
             // Handle not found
             console.log('Not found:', error.response.data);

@@ -21,7 +21,6 @@ const AttendanceTable = (props) => {
   const { selectedDateRange } = props;
   const empId = localStorage.getItem("id");
   const dates = formatDateRange(selectedDateRange);
-  // console.log(dates);
   const [rows, setRows] = useState([
     {
       project: 0,
@@ -346,16 +345,16 @@ const AttendanceTable = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Emp Name</TableCell>
-              <TableCell>Project</TableCell>
-              <TableCell>Mon</TableCell>
-              <TableCell>Tue</TableCell>
-              <TableCell>Wed</TableCell>
-              <TableCell>Thu</TableCell>
-              <TableCell>Fri</TableCell>
-              <TableCell>Sat</TableCell>
-              <TableCell>Sun</TableCell>
-              <TableCell>Total</TableCell>
+              <TableCell style={{fontWeight:'bold'}} >Emp Name</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Project</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Mon</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Tue</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Wed</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Thu</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Fri</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Sat</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Sun</TableCell>
+              <TableCell style={{fontWeight:'bold'}}>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

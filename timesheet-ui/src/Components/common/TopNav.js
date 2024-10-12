@@ -32,7 +32,7 @@ const TopNav = () => {
         </Typography>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="body1" style={{ marginRight: "10px" }}>
-            Role: Developer
+            Role: {localStorage.getItem('role')}
           </Typography>
           <Avatar alt="Profile" src="/profile-pic.jpg" />
           <Button 

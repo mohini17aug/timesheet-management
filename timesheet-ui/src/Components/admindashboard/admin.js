@@ -25,8 +25,9 @@ import {
   Paper,
 } from "@mui/material";
 import { backendServerUrl } from "../utils/constants.ts";
-import './admin.css'
+import './Admin.css'
 import Sidebar from "../common/SideBar.js";
+import TopNav from "../common/TopNav.js";
 
 const AdminDashboard = () => {
   const [selectedOption, setSelectedOption] = useState("Projects");
@@ -45,12 +46,12 @@ const AdminDashboard = () => {
 
   const [openEmployeeDialog, setOpenEmployeeDialog] = useState(false);
   const [openEditEmployeeDialog, setOpenEditEmployeeDialog] = useState(false);
- 
+
   const [openManagerDialog, setOpenManagerDialog] = useState(false);
   const [openRoleDialog, setOpenRoleDialog] = useState(false);
   const [openDeleteEmployeeDialog, setOpenDeleteEmployeeDialog] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
-  
+
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -63,7 +64,7 @@ const AdminDashboard = () => {
   const [manager, setManager] = useState("");
   const [managersList, setManagersList] = useState([]);
 
-  const [ _,setEmailForManagerChange] = useState("");
+  const [_, setEmailForManagerChange] = useState("");
   const [currentManager, setCurrentManager] = useState("");
   const [updateManager, setUpdateManager] = useState("");
   const [employeeIdManager, setEmployeeIdManager] = useState(null);
@@ -80,58 +81,50 @@ const AdminDashboard = () => {
     fetchProjects();
     fetchEmployees();
     fetchManagers();
-    }, []);
+  }, []);
 
-    useEffect(() => {
-      fetchProjects();
-      fetchEmployees();
-      fetchManagers();
-  
-      if (message) {
-        const timer = setTimeout(() => {
-          setMessage("");
-        }, 3000); // 3 seconds
-  
-        return () => clearTimeout(timer);
-      }
-    }, [message]);
-  
-    useEffect(() => {
-      if (error) {
-        const timer = setTimeout(() => {
-          setError("");
-        }, 3000); // 3 seconds
-  
-        return () => clearTimeout(timer);
-      }
-    }, [error]);
-  
-    const resetEmployeeForm = () => {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPassword("");
-      setManager("");
-      setCurrentManager("");
-      setUpdateManager("");
-      setRole("Employee");
-    };
-  
-    const resetRoleForm = () => {
-      setEmailForRoleChange("");
-      setCurrentRole("");
-      setUpdateRole("");
-      setEmployeeIdRole("");
-    };
-  
-    const resetManagerChangeForm = () => {
-      setEmailForManagerChange("");
-      setCurrentManager("");
-      setUpdateManager("");
-      setEmployeeIdManager("");
-    };
+  useEffect(() => {
+    fetchProjects();
+    fetchEmployees();
+    fetchManagers();
 
-    
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  const resetEmployeeForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setManager("");
+    setCurrentManager("");
+    setUpdateManager("");
+    setRole("Employee");
+  };
+
+  const resetRoleForm = () => {
+    setEmailForRoleChange("");
+    setCurrentRole("");
+    setUpdateRole("");
+    setEmployeeIdRole("");
+  };
+
   const fetchProjects = () => {
     axios
       .get(`${backendServerUrl}projects/`, {
@@ -257,7 +250,7 @@ const AdminDashboard = () => {
     setOpenEditEmployeeDialog(true);
   };
 
-   
+
 
   const handleUpdateEmployee = () => {
     if (!selectedEmployee) return;
@@ -288,7 +281,7 @@ const AdminDashboard = () => {
       });
   };
 
-  
+
   const handleOpenDeleteEmployeeDialog = (employee) => {
     setEmployeeToDelete(employee);
     setOpenDeleteEmployeeDialog(true);
@@ -296,7 +289,7 @@ const AdminDashboard = () => {
 
   const handleConfirmDeleteEmployee = () => {
     if (!employeeToDelete) return;
-  
+
     axios
       .delete(`${backendServerUrl}employees/${employeeToDelete.id}/`, {
         headers: {
@@ -369,7 +362,7 @@ const AdminDashboard = () => {
       return;
     }
 
-    console.log("Manager is ",manager);
+    console.log("Manager is ", manager);
 
     const selectedManager = managersList.find((mgr) => mgr.id === manager);
     console.log(selectedManager);
@@ -433,7 +426,7 @@ const AdminDashboard = () => {
       });
   };
 
- 
+
   const handleAddEmployee = () => {
     const data = {
       first_name: firstName,
@@ -460,42 +453,42 @@ const AdminDashboard = () => {
       });
   };
 
-  
-  return (
-    <div style={{ display: "flex" , paddingLeft: '150px'}}>
-      <Sidebar />
-      {/* Left Pane */}
-      <div className="left-pane">
-        <List component="nav">
-          <ListItem
-            button
-            className={`list-item ${selectedOption === "Projects" ? "selected" : ""}`}
-            onClick={() => setSelectedOption("Projects")}
-          >
-            <ListItemText primary="Projects" />
-          </ListItem>
-          <ListItem
-            button
-            className={`list-item ${selectedOption === "Employees" ? "selected" : ""}`}
-            onClick={() => setSelectedOption("Employees")}
-          >
-            <ListItemText primary="Employees" />
-          </ListItem>
-        </List>
-      </div>
 
+  return (
+    <div style={{ display: "flex", paddingLeft: '150px' }}>
+      <Sidebar />
       {/* Main Content */}
-      <div style={{ flex: 1, padding: "20px" }}>
-        <h1>Admin Dashboard</h1>
+      <div style={{ flex: 1}}>
+        <TopNav></TopNav>
+        <span style={{display:'flex', width:'auto'}}>
+          <div className="left-pane">
+            <List component="nav">
+              <ListItem
+                button
+                className={`list-item ${selectedOption === "Projects" ? "selected" : ""}`}
+                onClick={() => setSelectedOption("Projects")}
+              >
+                <ListItemText primary="Projects" />
+              </ListItem>
+              <ListItem
+                button
+                className={`list-item ${selectedOption === "Employees" ? "selected" : ""}`}
+                onClick={() => setSelectedOption("Employees")}
+              >
+                <ListItemText primary="Employees" />
+              </ListItem>
+            </List>
+          </div>
+
         {message && <div style={{ color: "green" }}>{message}</div>}
         {error && <div style={{ color: "red" }}>{error}</div>}
-     
+
         {selectedOption === "Projects" && (
-          <div>
+          <div style={{ padding: "20px", width: '100%'}}>
+            <h2>Project Management</h2>
             <Button onClick={() => setOpenProjectDialog(true)} style={buttonStyle}>
               Add Project
             </Button>
-            <h2>Project List</h2>
 
             <TableContainer component={Paper} style={{ marginTop: "20px" }}>
               <Table>
@@ -525,82 +518,81 @@ const AdminDashboard = () => {
               </Table>
             </TableContainer>
           </div>
+          
         )}
-
 
         {selectedOption === "Employees" && (
-           <div style={{ padding: "20px" }}>
+          <div style={{ padding: "20px" , width:'100%'}}>
             <h2>Employee Management</h2>
-          
-       <div className="button-container">
-          <Button
-            onClick={() => {
-              resetEmployeeForm();
-              setOpenEmployeeDialog(true);
-            }}
-            style={buttonStyle}
-          >
-            Add Employee
-          </Button>
-        </div>
-        <div style={{ margin: "20px 0" }}>
-      <TextField
-        label="Search Employees"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        fullWidth
-        margin="dense"
-      />
-  </div>
-      <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Manager</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredEmployees.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>{employee.first_name}</TableCell>
-                <TableCell>{employee.last_name}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.role}</TableCell>
-                <TableCell>{employee.manager}</TableCell>
-                <TableCell>
-                  <Button onClick={() => {
-                    resetEmployeeForm();
-                    handleEditEmployee(employee);
-                  }
-                    } color="primary">
-                    Edit
-                  </Button>
-                  <Button 
-                  onClick={() => {
-                    resetRoleForm(); // Reset the form before opening the dialog
-                    handleUpdateEmployeeRoleChange(employee);
-                  }} color="primary">
-                
-                Change Role</Button>
-                <Button onClick={() => handleOpenDeleteEmployeeDialog(employee)} color="secondary">
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
 
+            <div className="button-container">
+              <Button
+                onClick={() => {
+                  resetEmployeeForm();
+                  setOpenEmployeeDialog(true);
+                }}
+                style={buttonStyle}
+              >
+                Add Employee
+              </Button>
+            </div>
+            <div style={{ margin: "20px 0" }}>
+              <TextField
+                label="Search Employees"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                fullWidth
+                margin="dense"
+              />
+            </div>
+            <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>First Name</TableCell>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Role</TableCell>
+                    <TableCell>Manager</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredEmployees.map((employee) => (
+                    <TableRow key={employee.id}>
+                      <TableCell>{employee.first_name}</TableCell>
+                      <TableCell>{employee.last_name}</TableCell>
+                      <TableCell>{employee.email}</TableCell>
+                      <TableCell>{employee.role}</TableCell>
+                      <TableCell>{employee.manager}</TableCell>
+                      <TableCell>
+                        <Button onClick={() => {
+                          resetEmployeeForm();
+                          handleEditEmployee(employee);
+                        }
+                        } color="primary">
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            resetRoleForm(); // Reset the form before opening the dialog
+                            handleUpdateEmployeeRoleChange(employee);
+                          }} color="primary">
+
+                          Change Role</Button>
+                        <Button onClick={() => handleOpenDeleteEmployeeDialog(employee)} color="secondary">
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
-         
-
         )}
+        </span>
+        </div>
 
         {/* Dialog for Add Project */}
         <Dialog open={openProjectDialog} onClose={() => setOpenProjectDialog(false)}>
@@ -629,8 +621,8 @@ const AdminDashboard = () => {
           </DialogActions>
         </Dialog>
 
-         {/* Dialog for Edit Project */}
-         <Dialog open={openEditProjectDialog} onClose={() => setOpenEditProjectDialog(false)}>
+        {/* Dialog for Edit Project */}
+        <Dialog open={openEditProjectDialog} onClose={() => setOpenEditProjectDialog(false)}>
           <DialogTitle>Edit Project</DialogTitle>
           <DialogContent>
             <TextField
@@ -656,8 +648,8 @@ const AdminDashboard = () => {
           </DialogActions>
         </Dialog>
 
-          {/* Dialog for project Delete Confirmation */}
-          <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        {/* Dialog for project Delete Confirmation */}
+        <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             Are you sure you want to delete {projectToDelete?.name}?
@@ -821,7 +813,7 @@ const AdminDashboard = () => {
               margin="dense"
               disabled // Disable the email field to prevent editing
             />
-            
+
             <Button onClick={handleFetchEmployeeManager} color="primary">
               Fetch Employee Manager
             </Button>
@@ -863,9 +855,9 @@ const AdminDashboard = () => {
           </DialogActions>
         </Dialog>
 
-          {/* Dialog for Delete Employee */}
-            <Dialog open={openDeleteEmployeeDialog} onClose={() => setOpenDeleteEmployeeDialog(false)}>
-      <DialogTitle>Confirm Delete</DialogTitle>
+        {/* Dialog for Delete Employee */}
+        <Dialog open={openDeleteEmployeeDialog} onClose={() => setOpenDeleteEmployeeDialog(false)}>
+          <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             Are you sure you want to delete {employeeToDelete?.first_name} {employeeToDelete?.last_name}?
           </DialogContent>
@@ -924,7 +916,6 @@ const AdminDashboard = () => {
           </DialogActions>
         </Dialog>
       </div>
-    </div>
   );
 };
 

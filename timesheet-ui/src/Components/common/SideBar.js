@@ -15,7 +15,7 @@ const Sidebar = () => {
         <ListItem>
           <b style={{ color: "aliceblue" }}>TIMESHEET APP</b>
         </ListItem>
-        <ListItem button onClick={() => { navigate('/dashboard') }}>
+        {localStorage.getItem('role') !== 'Admin' && <ListItem button onClick={() => { navigate('/dashboard') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -27,8 +27,8 @@ const Sidebar = () => {
             <GroupIcon />
             Employees
           </ListItemIcon>
-        </ListItem>
-        <ListItem button onClick={() => { navigate('/manager') }}>
+        </ListItem>}
+        {localStorage.getItem('role') === 'Manager' && <ListItem button onClick={() => { navigate('/manager') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -40,8 +40,8 @@ const Sidebar = () => {
             <PersonIcon />
             Manager
           </ListItemIcon>
-        </ListItem>
-        <ListItem button onClick={() => { navigate('/admin') }}>
+        </ListItem>}
+        {localStorage.getItem('role') === 'Admin' && <ListItem button onClick={() => { navigate('/admin') }}>
           <ListItemIcon
             style={{
               height: "50px",
@@ -53,7 +53,7 @@ const Sidebar = () => {
             <DashboardIcon />
             Admin
           </ListItemIcon>
-        </ListItem>
+        </ListItem>}
       </List>
     </Drawer>
   );
