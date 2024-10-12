@@ -77,87 +77,87 @@ const AttendanceTable = (props) => {
     }
   };
 
+  const updateRows = async () => {
+    const timesheetData = await fetchTimeSheetData();
+    if (timesheetData.length > 0) {
+      setIsSetTime(true);
+      console.log(timesheetData[0].status);
+
+      const status = timesheetData[0].status;
+
+      if (status === "Approved") {
+        setIsApproved(true);
+      }
+      if (status === "Rejected") {
+        setIsApproved(false);
+        setIsSubmitted(false);
+      }
+      if (status === "Submitted") {
+        setIsSubmitted(true);
+        setIsApproved(false);
+      }
+
+      const rowsByProject = timesheetData.reduce(
+        (acc, entry) => {
+          const project = entry.project;
+
+          if (!acc[project]) {
+            acc[project] = {
+              project,
+              mon: { date: dates[0], hours: 0 },
+              tue: { date: dates[1], hours: 0 },
+              wed: { date: dates[2], hours: 0 },
+              thu: { date: dates[3], hours: 0 },
+              fri: { date: dates[4], hours: 0 },
+              sat: { date: dates[5], hours: 0 },
+              sun: { date: dates[6], hours: 0 },
+              total: 0,
+            };
+          }
+
+          const entryDate = new Date(entry.date);
+          const dayDiff = Math.floor(
+            (entryDate.getTime() - new Date(dates[0]).getTime()) /
+            (1000 * 60 * 60 * 24)
+          );
+
+          if (dayDiff >= 0 && dayDiff < 7) {
+            const dayOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][dayDiff];
+            acc[project][dayOfWeek].hours += entry.hours;
+            acc[project].total += entry.hours;
+          }
+
+          return acc;
+        },
+        {}
+      );
+
+      const formattedRows = Object.values(rowsByProject);
+      // Sort rows by project ID
+      formattedRows.sort((a, b) => a.project - b.project);
+      setIsSubmitted(true);
+      setRows(formattedRows);
+    }
+    else {
+      setIsSubmitted(false);
+      setIsSetTime(false);
+      const newRows = {
+        project: 0,
+        mon: { date: dates[0], hours: 0 },
+        tue: { date: dates[1], hours: 0 },
+        wed: { date: dates[2], hours: 0 },
+        thu: { date: dates[3], hours: 0 },
+        fri: { date: dates[4], hours: 0 },
+        sat: { date: dates[5], hours: 0 },
+        sun: { date: dates[6], hours: 0 },
+        total: 0,
+      };
+      setRows([newRows]);
+    }
+  };
+
   // useEffect to fetch timesheet data and update rows
   useEffect(() => {
-    const updateRows = async () => {
-      const timesheetData = await fetchTimeSheetData();
-      setIsSetTime(true);
-      if (timesheetData.length > 0) {
-        console.log(timesheetData[0].status);
-
-        const status = timesheetData[0].status;
-
-        if (status === "Approved") {
-          setIsApproved(true);
-        }
-        if (status === "Rejected") {
-          setIsApproved(false);
-          setIsSubmitted(false);
-        }
-        if (status === "Submitted") {
-          setIsSubmitted(true);
-          setIsApproved(false);
-        }
-
-        const rowsByProject = timesheetData.reduce(
-          (acc, entry) => {
-            const project = entry.project;
-
-            if (!acc[project]) {
-              acc[project] = {
-                project,
-                mon: { date: dates[0], hours: 0 },
-                tue: { date: dates[1], hours: 0 },
-                wed: { date: dates[2], hours: 0 },
-                thu: { date: dates[3], hours: 0 },
-                fri: { date: dates[4], hours: 0 },
-                sat: { date: dates[5], hours: 0 },
-                sun: { date: dates[6], hours: 0 },
-                total: 0,
-              };
-            }
-
-            const entryDate = new Date(entry.date);
-            const dayDiff = Math.floor(
-              (entryDate.getTime() - new Date(dates[0]).getTime()) /
-              (1000 * 60 * 60 * 24)
-            );
-
-            if (dayDiff >= 0 && dayDiff < 7) {
-              const dayOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][dayDiff];
-              acc[project][dayOfWeek].hours += entry.hours;
-              acc[project].total += entry.hours;
-            }
-
-            return acc;
-          },
-          {}
-        );
-
-        const formattedRows = Object.values(rowsByProject);
-        // Sort rows by project ID
-        formattedRows.sort((a, b) => a.project - b.project);
-        // setIsSubmitted(true);
-        setRows(formattedRows);
-      }
-      else {
-        setIsSubmitted(false);
-        setIsSetTime(false);
-        const newRows = {
-          project: 0,
-          mon: { date: dates[0], hours: 0 },
-          tue: { date: dates[1], hours: 0 },
-          wed: { date: dates[2], hours: 0 },
-          thu: { date: dates[3], hours: 0 },
-          fri: { date: dates[4], hours: 0 },
-          sat: { date: dates[5], hours: 0 },
-          sun: { date: dates[6], hours: 0 },
-          total: 0,
-        };
-        setRows([newRows]);
-      }
-    };
-
     updateRows();
   }, [selectedDateRange]); // Trigger this effect when selectedDateRange changes
 
@@ -263,15 +263,16 @@ const AttendanceTable = (props) => {
     ]);
   };
 
-  const handleRemoveRow = (index) =>
+  const handleRemoveRow = (index) => {
     setRows((prevRows) => prevRows.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = () => {
     if (totalHoursForWeek < 40) {
       alert("fill for 40 hours");
     }
     else {
-      setIsSetTime(true);
+      setIsSetTime(false);
       const timesheet = rows.flatMap((row) => {
         return [
           {
@@ -334,6 +335,7 @@ const AttendanceTable = (props) => {
           alert("Data submitted successfully !!");
           setIsSubmitted(true);
           setIsEditable(false);
+          updateRows();
         })
         .catch(() => { });
     }
@@ -345,16 +347,16 @@ const AttendanceTable = (props) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell style={{fontWeight:'bold'}} >Emp Name</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Project</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Mon</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Tue</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Wed</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Thu</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Fri</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Sat</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Sun</TableCell>
-              <TableCell style={{fontWeight:'bold'}}>Total</TableCell>
+              <TableCell>Emp Name</TableCell>
+              <TableCell>Project</TableCell>
+              <TableCell>Mon</TableCell>
+              <TableCell>Tue</TableCell>
+              <TableCell>Wed</TableCell>
+              <TableCell>Thu</TableCell>
+              <TableCell>Fri</TableCell>
+              <TableCell>Sat</TableCell>
+              <TableCell>Sun</TableCell>
+              <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -367,6 +369,7 @@ const AttendanceTable = (props) => {
                 )}
                 <TableCell>
                   <Select
+                    style={{width: '100px'}}
                     value={row.project}
                     onChange={(e) =>
                       handleInputChange(index, "project", e.target.value)
@@ -421,7 +424,6 @@ const AttendanceTable = (props) => {
                   style={{ margin: "25px" }}
                   onClick={() => handleRemoveRow(index)}
                   disabled={isSubmitted}
-                  hidden={index === 0}
                 >
                   Remove
                 </Button>
