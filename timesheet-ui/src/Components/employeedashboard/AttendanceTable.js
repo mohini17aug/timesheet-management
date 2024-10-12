@@ -87,6 +87,7 @@ const AttendanceTable = (props) => {
 
       if (status === "Approved") {
         setIsApproved(true);
+        setIsSubmitted(true);
       }
       if (status === "Rejected") {
         setIsApproved(false);
@@ -135,7 +136,6 @@ const AttendanceTable = (props) => {
       const formattedRows = Object.values(rowsByProject);
       // Sort rows by project ID
       formattedRows.sort((a, b) => a.project - b.project);
-      setIsSubmitted(true);
       setRows(formattedRows);
     }
     else {
